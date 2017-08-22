@@ -27,7 +27,7 @@ public class RestClient<T, U> {
 				headers.set(entry.getKey(), entry.getValue());
 			}
 			HttpEntity<T> entity = new HttpEntity<T>(request.getRequest(), headers);
-			ResponseEntity<U> response = restTemplate.exchange(request.getUrl(), request.getMethodType(), entity, request.getClazz(), request.getParameterMap());
+			ResponseEntity<U> response = restTemplate.exchange(request.getUrl(), request.getMethodType(), entity, request.getResponseType(), request.getParameterMap());
 			restResponse.setStatus(ReportsConstants.REST_RESPONSE_SUCESS);
 			restResponse.setResponse(response.getBody());
 		} catch (Exception e) {
