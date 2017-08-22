@@ -13,7 +13,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
+import com.yatra.tech.client.RestClient;
 import com.yatra.tech.dto.ExcelLineItem;
+import com.yatra.tech.dto.RestRequest;
+import com.yatra.tech.dto.RestResponse;
 import com.yatra.tech.entities.ABFUserAuthorization;
 import com.yatra.tech.entities.ABFUserLog;
 import com.yatra.tech.service.ABFUserAuthorizationService;
@@ -37,6 +40,8 @@ public class GeneralAppTest {
 	private TransactionService transactionService;
 	@Autowired
 	private SpringTemplateDAO springTemplateDao;
+	@Autowired
+	private RestClient restClient;
 
 	@Test
 	public void testABFDao() {
@@ -99,5 +104,12 @@ public class GeneralAppTest {
 		
 		userLog = this.abfUserLogService.findBySuperPnr(superPnr);
 		Assert.assertNull(userLog);
+	}
+	
+	@Test
+	public void testRestClient() {
+		RestRequest<String, String> request = new RestRequest<>();
+		RestResponse<String> response = this.restClient.sendRestRequest(request);
+		Assert.assertEquals(response.getStatus(), "FAILED");
 	}
 }
