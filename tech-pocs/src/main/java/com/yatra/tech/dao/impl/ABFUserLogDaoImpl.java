@@ -5,13 +5,11 @@ import java.util.List;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.yatra.tech.dao.ABFUserLogDAO;
 import com.yatra.tech.entities.ABFUserLog;
 
 @Repository("abfUserLogDao")
-@Transactional
 public class ABFUserLogDaoImpl extends GenericHibernateDAO<ABFUserLog, Long> implements ABFUserLogDAO {
 
 	@Override

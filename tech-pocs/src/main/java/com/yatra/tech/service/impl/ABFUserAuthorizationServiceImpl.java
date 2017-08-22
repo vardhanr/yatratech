@@ -2,6 +2,8 @@ package com.yatra.tech.service.impl;
 
 import java.util.List;
 
+import javax.transaction.Transactional;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -10,6 +12,7 @@ import com.yatra.tech.entities.ABFUserAuthorization;
 import com.yatra.tech.service.ABFUserAuthorizationService;
 
 @Service("abfUserAuthorizationService")
+@Transactional
 public class ABFUserAuthorizationServiceImpl implements ABFUserAuthorizationService {
 
 	@Autowired

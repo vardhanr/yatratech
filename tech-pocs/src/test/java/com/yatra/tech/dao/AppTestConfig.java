@@ -20,9 +20,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+@EnableScheduling
 @EnableTransactionManagement
 @ComponentScan(value = "com.yatra")
 @ImportResource({ "classpath:applicationContext.xml", "classpath:database.xml" })

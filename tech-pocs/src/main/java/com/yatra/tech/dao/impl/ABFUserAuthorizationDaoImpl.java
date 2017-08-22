@@ -5,13 +5,11 @@ import java.util.List;
 import org.hibernate.criterion.DetachedCriteria;
 import org.hibernate.criterion.Restrictions;
 import org.springframework.stereotype.Repository;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.yatra.tech.dao.ABFUserAuthorizationDAO;
 import com.yatra.tech.entities.ABFUserAuthorization;
 
 @Repository("abfUserAuthorizationDao")
-@Transactional
 public class ABFUserAuthorizationDaoImpl extends GenericHibernateDAO<ABFUserAuthorization, Long> implements ABFUserAuthorizationDAO {
 
 	@Override
