@@ -4,27 +4,23 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Transactional;
 
 import com.yatra.tech.dao.ABFUserLogDAO;
 import com.yatra.tech.entities.ABFUserLog;
 import com.yatra.tech.service.ABFUserLogService;
 
 @Service("abfUserLogService")
-@Transactional
 public class ABFUserLogServiceImpl implements ABFUserLogService {
 
 	@Autowired
 	private ABFUserLogDAO abfUserLogDao;
 
 	@Override
-	@Transactional
 	public List<ABFUserLog> findAll() {
 		return this.abfUserLogDao.findAll();
 	}
 
 	@Override
-	@Transactional(readOnly = false)
 	public void saveOrUpdate(List<ABFUserLog> list) {
 		this.abfUserLogDao.saveOrUpdateAll(list);
 	}
