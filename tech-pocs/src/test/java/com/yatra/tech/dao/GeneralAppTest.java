@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -21,9 +22,11 @@ import com.yatra.tech.service.ExcelConverterService;
 import com.yatra.tech.service.TransactionService;
 
 @RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { ReportsTestConfig.class })
-public class ReportsTest {
+@ContextConfiguration(classes = { AppTestConfig.class })
+public class GeneralAppTest {
 
+	private static Logger logger = Logger.getLogger(GeneralAppTest.class);
+	
 	@Autowired
 	private ABFUserAuthorizationService abfUserAuthorizationService;
 	@Autowired
@@ -88,6 +91,7 @@ public class ReportsTest {
 		try {
 			this.transactionService.saveTransactionData(map);
 		} catch (Exception e) {
+			logger.error("Exception occured while saving data");
 		}
 		
 		authorization = this.abfUserAuthorizationService.findByUserId(userId);

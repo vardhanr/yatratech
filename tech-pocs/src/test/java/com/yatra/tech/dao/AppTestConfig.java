@@ -27,7 +27,7 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @ComponentScan(value = "com.yatra")
 @ImportResource({ "classpath:applicationContext.xml", "classpath:database.xml" })
 @PropertySource(value = { "classpath:application.properties", "classpath:database.properties" })
-public class ReportsTestConfig implements ApplicationContextAware {
+public class AppTestConfig implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
 
