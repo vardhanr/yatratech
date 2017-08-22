@@ -59,7 +59,7 @@ public class ReportsTestConfig implements ApplicationContextAware {
 	public LocalSessionFactoryBean getSessionFactory() {
 		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
 		sessionFactory.setDataSource(getDataSource());
-		sessionFactory.setPackagesToScan(new String[] { "com.yatra.reports.entities" });
+		sessionFactory.setPackagesToScan(new String[] { "com.yatra.tech.entities" });
 		sessionFactory.setHibernateProperties(getHibernateProperties());
 		return sessionFactory;
 	}
