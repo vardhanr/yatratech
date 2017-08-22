@@ -5,7 +5,6 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,7 +15,7 @@ import com.yatra.tech.service.ABFUserLogService;
 import com.yatra.tech.service.TransactionService;
 
 @Service("transactionService")
-@Transactional(readOnly = false, isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRED)
+@Transactional(readOnly = true)
 public class TransactionServiceImpl implements TransactionService {
 
 	private static Logger logger = Logger.getLogger(TransactionServiceImpl.class);
@@ -27,7 +26,7 @@ public class TransactionServiceImpl implements TransactionService {
 	private ABFUserAuthorizationService abfUserAuthorizationService;
 
 	@Override
-	@Transactional(noRollbackFor = Exception.class)
+	@Transactional(propagation = Propagation.REQUIRED, rollbackFor = { Exception.class }, readOnly = false)
 	public void saveTransactionData(Map<String, Object> data) {
 		logger.info("Initiating transaction");
 		ABFUserAuthorization authorization = (ABFUserAuthorization) data.get("authorization");

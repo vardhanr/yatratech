@@ -4,8 +4,6 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-import org.springframework.transaction.annotation.Isolation;
-import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.yatra.tech.dao.ABFUserAuthorizationDAO;
@@ -13,7 +11,7 @@ import com.yatra.tech.entities.ABFUserAuthorization;
 import com.yatra.tech.service.ABFUserAuthorizationService;
 
 @Service("abfUserAuthorizationService")
-@Transactional(readOnly = false, isolation = Isolation.DEFAULT, propagation = Propagation.REQUIRES_NEW)
+@Transactional
 public class ABFUserAuthorizationServiceImpl implements ABFUserAuthorizationService {
 
 	@Autowired

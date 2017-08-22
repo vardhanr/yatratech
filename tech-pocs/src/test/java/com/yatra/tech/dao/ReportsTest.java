@@ -85,7 +85,10 @@ public class ReportsTest {
 		userLog.setTtid("0498598437");
 		userLog.setUserId("rahul");
 		map.put("userLog", userLog);
-		this.transactionService.saveTransactionData(map);
+		try {
+			this.transactionService.saveTransactionData(map);
+		} catch (Exception e) {
+		}
 		
 		authorization = this.abfUserAuthorizationService.findByUserId(userId);
 		Assert.assertNull(authorization);
