@@ -16,22 +16,27 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.ImportResource;
 import org.springframework.context.annotation.PropertySource;
 import org.springframework.core.env.Environment;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.datasource.DriverManagerDataSource;
 import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
+import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
 @Configuration
+@EnableScheduling
 @EnableTransactionManagement
 @ComponentScan(value = "com.yatra")
 @ImportResource({ "classpath:applicationContext.xml", "classpath:database.xml" })
 @PropertySource(value = { "classpath:application.properties", "classpath:database.properties" })
-public class ReportsConfig implements ApplicationContextAware {
+public class ApplicationConfig implements ApplicationContextAware {
 
 	private ApplicationContext applicationContext;
 
 	@Autowired
 	private Environment environment;
+	@Autowired
+	private DataSource springDataSource;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -76,5 +81,10 @@ public class ReportsConfig implements ApplicationContextAware {
 		HibernateTransactionManager txManager = new HibernateTransactionManager();
 		txManager.setSessionFactory(sessionFactory);
 		return txManager;
+	}
+	
+	@Bean
+	public JdbcTemplate getJdbcTemplate() {
+		return new JdbcTemplate(this.springDataSource);
 	}
 }

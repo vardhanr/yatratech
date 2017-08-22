@@ -10,7 +10,7 @@
 				           http://www.springframework.org/schema/aop
 				           http://www.springframework.org/schema/aop/spring-aop.xsd">
 
-	<bean id="pageCachePlaceHolderConfig" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
+	<bean id="propertyPlaceholderConfigurer" class="org.springframework.beans.factory.config.PropertyPlaceholderConfigurer">
 		<property name="locations">
 			<list>
 				<value>classpath:database.properties</value>
