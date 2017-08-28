@@ -2,6 +2,8 @@ package com.yatra.tech.dto;
 
 import org.apache.commons.lang3.builder.ReflectionToStringBuilder;
 import org.apache.commons.lang3.builder.StandardToStringStyle;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatus;
 
 /**
  * 
@@ -12,9 +14,11 @@ import org.apache.commons.lang3.builder.StandardToStringStyle;
  */
 public class RestResponse<U> extends BaseDTO {
 
+	private HttpStatus statusCode;
+	private HttpHeaders httpHeaders;
 	private String status;
 	private String responseMessage;
-	private U response;
+	private U responseBody;
 
 	public String getResponseMessage() {
 		return responseMessage;
@@ -24,12 +28,12 @@ public class RestResponse<U> extends BaseDTO {
 		this.responseMessage = responseMessage;
 	}
 
-	public U getResponse() {
-		return response;
+	public U getResponseBody() {
+		return responseBody;
 	}
 
-	public void setResponse(U response) {
-		this.response = response;
+	public void setResponseBody(U response) {
+		this.responseBody = response;
 	}
 
 	public String getStatus() {
@@ -47,5 +51,21 @@ public class RestResponse<U> extends BaseDTO {
 		style.setUseClassName(false);
 		style.setUseIdentityHashCode(false);
 		return new ReflectionToStringBuilder(this, style).toString();
+	}
+
+	public HttpStatus getStatusCode() {
+		return statusCode;
+	}
+
+	public void setStatusCode(HttpStatus statusCode) {
+		this.statusCode = statusCode;
+	}
+
+	public HttpHeaders getHttpHeaders() {
+		return httpHeaders;
+	}
+
+	public void setHttpHeaders(HttpHeaders httpHeaders) {
+		this.httpHeaders = httpHeaders;
 	}
 }

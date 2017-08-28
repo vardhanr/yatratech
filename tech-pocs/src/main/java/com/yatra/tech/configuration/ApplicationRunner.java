@@ -5,6 +5,7 @@ import org.springframework.context.annotation.AnnotationConfigApplicationContext
 
 public class ApplicationRunner {
 
+	@SuppressWarnings({ "unused", "resource" })
 	public static void main(String[] args) {
 		ApplicationContext context = new AnnotationConfigApplicationContext(ApplicationConfig.class);
 	}

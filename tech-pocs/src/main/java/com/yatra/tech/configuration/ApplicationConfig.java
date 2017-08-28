@@ -4,6 +4,7 @@ import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.apache.commons.dbcp.BasicDataSource;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.BeansException;
@@ -35,8 +36,6 @@ public class ApplicationConfig implements ApplicationContextAware {
 
 	@Autowired
 	private Environment environment;
-	@Autowired
-	private DataSource springDataSource;
 
 	@Override
 	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
@@ -85,6 +84,16 @@ public class ApplicationConfig implements ApplicationContextAware {
 	
 	@Bean
 	public JdbcTemplate getJdbcTemplate() {
-		return new JdbcTemplate(this.springDataSource);
+		return new JdbcTemplate(getSpringDataSource());
+	}
+	
+	@Bean
+	public DataSource getSpringDataSource() {
+		BasicDataSource dataSource = new BasicDataSource();
+		dataSource.setDriverClassName(this.environment.getRequiredProperty("db.driver"));
+		dataSource.setUrl(this.environment.getRequiredProperty("db.url"));
+		dataSource.setUsername(this.environment.getRequiredProperty("db.username"));
+		dataSource.setPassword(this.environment.getRequiredProperty("db.password"));
+		return dataSource;
 	}
 }

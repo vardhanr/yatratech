@@ -13,19 +13,19 @@ import org.springframework.http.HttpMethod;
  */
 public class RestRequest<T, U> extends BaseDTO {
 
-	private T request;
+	private T requestBody;
 	private String url;
 	private HttpMethod methodType;
 	private Class<U> responseType;
 	private Map<String, String> headerMap;
 	private Map<String, String> parameterMap;
 
-	public T getRequest() {
-		return request;
+	public T getRequestBody() {
+		return requestBody;
 	}
 
-	public void setRequest(T request) {
-		this.request = request;
+	public void setRequestBody(T request) {
+		this.requestBody = request;
 	}
 
 	public String getUrl() {
