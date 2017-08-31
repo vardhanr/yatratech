@@ -1,6 +1,5 @@
 package com.yatra.tech.dto;
 
-import java.lang.reflect.ParameterizedType;
 import java.util.Map;
 
 import org.springframework.http.HttpMethod;
@@ -20,10 +19,14 @@ public class RestRequest<T, U> extends BaseDTO {
 	private Class<U> responseType;
 	private Map<String, String> headerMap;
 	private Map<String, String> parameterMap;
-	
-	@SuppressWarnings("unchecked")
+
 	public RestRequest() {
-		this.responseType = (Class<U>) ((ParameterizedType) getClass().getGenericSuperclass()).getActualTypeArguments()[1];
+	}
+
+	public RestRequest(Class<U> responseType, String url, HttpMethod methodType) {
+		this.responseType = responseType;
+		this.url = url;
+		this.methodType = methodType;
 	}
 
 	public T getRequestBody() {

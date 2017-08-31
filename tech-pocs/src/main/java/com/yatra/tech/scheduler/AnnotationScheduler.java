@@ -6,7 +6,7 @@ import org.springframework.stereotype.Service;
 @Service
 public class AnnotationScheduler {
 
-	@Scheduled(fixedDelay = 1 * 1000)
+	@Scheduled(fixedDelay = 3600 * 1000)
 	public void annotationScheduler() {
 		System.out.println("Rahul Dev Vardhan : " + System.currentTimeMillis());
 	}

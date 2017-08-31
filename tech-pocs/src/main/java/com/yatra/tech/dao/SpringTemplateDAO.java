@@ -7,4 +7,6 @@ import com.yatra.tech.entities.ABFUserAuthorization;
 public interface SpringTemplateDAO {
 
 	public List<ABFUserAuthorization> findAllUserAuthorization();
+	
+	public void testTicketingData();
 }

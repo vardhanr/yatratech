@@ -32,14 +32,14 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource(value = { "classpath:application.properties", "classpath:database.properties" })
 public class ApplicationConfig implements ApplicationContextAware {
 
-	private ApplicationContext applicationContext;
+	private static ApplicationContext applicationContext;
 
 	@Autowired
 	private Environment environment;
 
 	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
+	public void setApplicationContext(ApplicationContext context) throws BeansException {
+		applicationContext = context;
 	}
 
 	public ApplicationContext getApplicationContext() {
