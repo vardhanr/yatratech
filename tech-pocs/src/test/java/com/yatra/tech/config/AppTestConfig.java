@@ -1,4 +1,4 @@
-package com.yatra.tech.dao;
+package com.yatra.tech.config;
 
 import java.util.Properties;
 

@@ -14,6 +14,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.yatra.tech.client.RestClient;
+import com.yatra.tech.config.AppTestConfig;
 import com.yatra.tech.dto.ExcelLineItem;
 import com.yatra.tech.dto.RestRequest;
 import com.yatra.tech.dto.RestResponse;
