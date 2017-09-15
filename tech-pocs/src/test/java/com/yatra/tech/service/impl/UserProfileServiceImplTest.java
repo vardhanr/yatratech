@@ -1,11 +1,8 @@
 package com.yatra.tech.service.impl;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.velocity.app.VelocityEngine;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,7 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import com.yatra.tech.config.BaseTestConfig;
 import com.yatra.tech.dto.PaxDetail;
 import com.yatra.tech.service.UserProfileService;
-import com.yatra.tech.utils.VelocityHelper;
 
 public class UserProfileServiceImplTest extends BaseTestConfig {
 

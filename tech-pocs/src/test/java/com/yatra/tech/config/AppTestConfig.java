@@ -24,8 +24,6 @@ import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
-import com.yatra.tech.utils.VelocityHelper;
-
 @Configuration
 @EnableScheduling
 @EnableTransactionManagement
@@ -94,10 +92,5 @@ public class AppTestConfig implements ApplicationContextAware {
 	@Bean
 	public VelocityEngine getVelocityEngine() {
 		return new VelocityEngine();
-	}
-	
-	@Bean
-	public VelocityHelper getVelocityHelper() {
-		return new VelocityHelper();
 	}
 }
