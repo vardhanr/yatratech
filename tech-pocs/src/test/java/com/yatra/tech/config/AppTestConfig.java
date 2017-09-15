@@ -1,9 +1,10 @@
-package com.yatra.tech.dao;
+package com.yatra.tech.config;
 
 import java.util.Properties;
 
 import javax.sql.DataSource;
 
+import org.apache.velocity.app.VelocityEngine;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.AvailableSettings;
 import org.springframework.beans.BeansException;
@@ -22,6 +23,8 @@ import org.springframework.orm.hibernate5.HibernateTransactionManager;
 import org.springframework.orm.hibernate5.LocalSessionFactoryBean;
 import org.springframework.scheduling.annotation.EnableScheduling;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
+
+import com.yatra.tech.utils.VelocityHelper;
 
 @Configuration
 @EnableScheduling
@@ -86,5 +89,15 @@ public class AppTestConfig implements ApplicationContextAware {
 	@Bean
 	public JdbcTemplate getJdbcTemplate() {
 		return new JdbcTemplate(this.springDataSource);
+	}
+	
+	@Bean
+	public VelocityEngine getVelocityEngine() {
+		return new VelocityEngine();
+	}
+	
+	@Bean
+	public VelocityHelper getVelocityHelper() {
+		return new VelocityHelper();
 	}
 }

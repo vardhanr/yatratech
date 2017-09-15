@@ -12,13 +12,14 @@ import com.yatra.tech.dao.SpringTemplateDAO;
 import com.yatra.tech.dao.impl.SpringTemplateDaoImpl;
 import com.yatra.tech.dto.RestRequest;
 import com.yatra.tech.dto.RestResponse;
+import com.yatra.tech.service.impl.UserProfileServiceImpl;
 
 public class ApplicationRunner {
-
+	
 	public static void main(String[] args) {
 //		getSearchResults();
 //		makeBooking();
-		testTicketingData();
+		new UserProfileServiceImpl().getUserProfile("a26e7ed9-4420-4863-bac3-9495e6b84157");
 	}
 
 	public static void testRest() {
@@ -73,4 +74,5 @@ public class ApplicationRunner {
 		SpringTemplateDAO templateDAO = context.getBean(SpringTemplateDaoImpl.class);
 		templateDAO.testTicketingData();
 	}
+	
 }

@@ -1,0 +1,205 @@
+#set($pricingJson = $requestMap.pricingJson)
+
+#set($username = $requestMap.username)
+#set($fltSchedule = $pricingJson.fltSchedule)
+#set($origin = $requestMap.origin)
+#set($destination = $requestMap.destination)
+#set($departDate = $requestMap.departDate)
+#set($arrivalDate = $requestMap.arrivalDate)
+#set($bookingRefNo = $requestMap.bookingRefNo)
+#set($totalFare = $requestMap.totalFare)
+#set($stringUtils = $requestMap.stringUtils)
+#set($imagePath = $requestMap.imagePath)
+#set($curSymb = $requestMap.currencySymbol)
+#set($pricingUrl = $requestMap.pricingUrl)
+
+<html>
+  </head>
+  
+  <body style="background-color:#f8f8f8">
+    <table style="width: 45%;margin: 0 auto; font-family: Arial; background-color:#fff;" cellpadding="0" cellspacing="0" border="0">
+      <tbody>
+        <tr>
+          <td colspan="2">
+            <table width="100%"  border="0" cellspacing="0" cellpadding="2" >
+              <tr>
+                <td width="27%" rowspan="2" valign="middle" style="text-align:right; font-size:12px;"><img src="https://ns.yatracdn.com/common/images/emailers/mailer_logo.png" width="120"></td>
+                <td width="65%" valign="middle" style="text-align:right; font-size:12px;"> Customer Support <b>1860-200-0500</b></td>
+                <td width="8%" style="padding:10px 0 0 0;">&nbsp;<img name="phone" src="$imagePath/call_ICtop.gif" width="32" height="32" alt="phone"></td>
+              </tr>
+              <tr>
+                <td colspan="2" valign="middle" style="text-align:right; font-size:12px; padding:0 10px 0 0;"><table width="100%" border="0" cellspacing="0" cellpadding="0">
+                  <tr>
+                    <td width="68%" valign="middle" style="text-align:right; font-size:12px; padding: 15px 6px 20px 5px;"><b>DOWNLOAD</b></td>
+                    <td width="12%"><a href="#"><img name="android" src="$imagePath/playstoreSmall_IC.gif" border="0" width="32" height="32" alt="android" style="background-color: #CCCCCC"></a></td>
+                    <td width="11%"><a href="#"><img name="IOS" src="$imagePath/iosSmall_IC.gif" width="32" height="32" border="0" alt="IOS" style="background-color: #CCCCCC"></a></td>
+                    <td width="9%"><a href="#"><img name="window" src="$imagePath/windowSmall_IC.gif" width="32" height="32" border="0" alt="window" style="background-color: #CCCCCC"></a></td>
+                  </tr>
+                  </table>
+                </td>
+              </tr>
+            </table>
+          </td>
+        </tr>
+
+        <tr>
+          <td  style="text-align: center;background-color: black;color: white; font-family:Arial, Helvetica, sans-serif; font-size:11px;">
+            <table width="100%" border="0" cellspacing="0" cellpadding="10">
+              <tr>
+                <td width="14%" style="text-align:center; font-size:14px;"><a href="#" style="text-decoration:none; color:white">Flights</a></td>
+                <td width="14%" style="text-align:center; font-size:14px;"><a href="#" style="text-decoration:none; color:white">Hotels</a></td>
+                <td width="14%" style="text-align:center; font-size:14px;"><span style="text-align: center;background-color: black;color: white;"><a href="#" style="text-decoration:none; color:white">Flight+Hotels</a></span></td>
+                <td width="14%" style="text-align:center; font-size:14px;"><span style="text-align: center;background-color: black;color: white;"><a href="#" style="text-decoration:none; color:white">Holidays</a></span></td>
+                <td width="14%" style="text-align:center; font-size:14px;"><a href="#" style="text-decoration:none; color:white">Trains</a></td>
+                <td width="14%" style="text-align:center; font-size:14px;"><a href="#" style="text-decoration:none; color:white">Bus</a></td>
+                <td width="14%" style="text-align:center; font-size:14px;"><a href="#" style="text-decoration:none; color:white">Offers</a></td>
+              </tr>
+            </table>          
+          </td>
+        </tr>
+        
+        ###########################
+        ### User Booking Details
+        ###########################
+        
+        <tr>
+          <td colspan="2" style="text-align:center;"><img src="$imagePath/filling_fast.png" alt="largeImage" /></td>
+        </tr>
+        <tr>
+          <td colspan="2"><p style=" padding:20px 0 0 10px;">Dear $username,</p></td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: left;">
+            <p style=" margin: 10px; padding: 0; line-height: 21px;">
+          		Thank You for choosing Yatra.com as your travel partner for booking flights.<br/>Your requested itinerary has been saved. Please review it and complete your booking by clicking here.<br/><br/>Note: Air fares are dynamic and subject to change. Please ensure your booking in completed in a timely manner to avoid any fare changes
+          	</p>
+          </td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: left;">&nbsp;</td>
+        </tr>
+        <tr>
+          <td colspan="2" style="text-align: left; font-size:16px;"><p style=" margin: 10px; padding: 0;"><b>Flight Details</b></p></td>
+        </tr>
+        
+        <tr>
+          <td colspan="2"><table width="100%" border="0" cellspacing="0" cellpadding="0" style="border: 1px solid #ccc;background-color: #FBFBFB;width: 97%;margin: 0 auto;">
+            
+            ###############################
+		    #### Flight Schedule Details
+		    ###############################
+
+			#foreach($key in $fltSchedule)
+				#set($last = $key.get(0).OD.get(0).FS.size() - 1)
+				#foreach($fs in $key.get(0).OD.get(0).FS)
+					#set ($airlineLogo = "https://css.yatracdn.com/content/globalcdn/airline-logo-cdn/resources/images/logo/" + $fs.ac + ".gif")
+					
+					
+					#set ( $dCity = $fs.dct + "(" + $fs.dac + ")" )
+					#set ( $aCity = $fs.act + "(" + $fs.aac + ")" )
+					
+					#set ( $dTime = $fs.dd )
+					#set ( $aTime = $fs.ad )
+					#set ( $durationArr = $stringUtils.split($fs.du,":") )
+					#set ( $duration = $durationArr.get(0) + "h:" + $durationArr.get(1) + "m" ) 
+					
+		            <tr>
+		              <td>
+		                <table width="100%" border="0" cellspacing="0" cellpadding="0">
+		                  <tr>
+		                    <td width="11%" rowspan="2"><img name="flightLogo1" src="$airlineLogo" alt="flightLogo1" style="margin-left: 10px;"></td>
+		                    <td width="89%" style="vertical-align:middle"><table border="0" cellspacing="0" cellpadding="5">
+		                        <tr>
+		                          <td><b>$dCity</b></td>
+		                          <td><img name="arrow1" src="$imagePath/arrow.png" width="32" height="32" alt="arrow" style="margin-left: 10px;"></td>
+		                          <td><b>$aCity</b></td>
+		                        </tr>
+		                    </table></td>
+		                  </tr>
+		                  <tr>
+		                    <td style="padding:0 0 0 5px; margin:0; color:#999"><small><b>$departDate </b></small> | <small><b> $fs.an </b></small></td>
+		                  </tr>
+		                  <tr>
+		                    <td>&nbsp;</td>
+		                    <td style="padding:10px 0 0 5px; margin:0; color:#999;font-size: 12px;"><span>Depart: </span><span><b>$dTime</b></span> <span style="position: relative;top: 4px;"><img name="arrow" src="$imagePath/tinyArrow.png" width="18" height="15" alt="Arrow"></span> <span>Arrive:</span> <span><b>$aTime</b></span> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span>Duration:</span> <span><b>$duration</b></span>
+		                  </tr>
+		                </table>
+		              </td>
+		            </tr>
+		            <tr>
+		              <td>&nbsp;</td>
+		            </tr>
+            	#end
+            #end
+
+			###############################
+		    #### Payment Details
+		    ###############################
+		    
+		    #set ($finalTotalAmount = $charges.total)            
+
+            <tr>
+              <td>
+                <table width="100%" border="0" cellspacing="0" cellpadding="0" style="background-color: #fff;border-top: 1px solid #ccc;">
+                  <tr>
+                    <td colspan="2" style="padding: 10px 0px 10px 20px;"><b style="font-size:25px;">$curSymb $totalFare</b></span></td>
+                  <td width="25%" rowspan="2"><a href="$pricingUrl"><button style="background-color: rgb(234, 35, 48); border: none; padding: 8px; width: 120px; color: white; font-weight: bold; font-size: 18px; margin: 5px 10px; cursor:pointer;">Pay Now</button></a></td>
+                  </tr>
+                  </table>
+                  </td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td colspan="2">&nbsp;</td>
+            </tr>
+            
+            ###############################
+		    #### Footer
+		    ###############################
+
+            <tr>
+              <td colspan="2"><p style="margin:10px; padding:0;font-size: 15px;color: #999;line-height: 20px;">For future clarification, you can contact us on  <span><b>1860-200-0500</b></span> to speak to our customer service representative.</p></td>
+            </tr>
+            <tr>
+              <td colspan="2">&nbsp;</td>
+            </tr>
+             <tr>
+              <td colspan="2"><p style="margin:10px; padding:0;font-size: 15px;color: #999;">Happy Travelling!</p>
+              <p style="margin:10px; padding:0;font-size: 15px;color: #999;">TeamYatra</p></td>
+            </tr>
+            <tr>
+              <td colspan="2">&nbsp;</td>
+            </tr>
+             <tr>
+              <td colspan="2" style="color:#999;margin:10px; padding: 10px;border-bottom: 1px solid #CCC;font-size: 11px;"><span style="color:red;">Please Note: </span>Fare is subject to the availability   and airline reserve the right to cancel the booking at anytime.</td>
+            </tr>
+             <tr>
+              <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+              <td colspan="2"><p style="text-align:center;color:#999; padding:5px 0 5px 0; font-size:12px;">Follow us on</p></td>
+            </tr>
+            <tr>
+              <td colspan="2"><p style="text-align:center;"><span style="margin-right: 15px;"><a href="#"><img name="facebook" border="0" src="$imagePath/fb_IC.gif" width="32" height="32" alt="fb" /></a></span><span style="margin-right: 13px;"><a href="#"><img name="twitter" src="$imagePath/twt_IC.gif" border="0" width="32" height="32" alt="twitter"></a></span><span style="margin-left: 2px;"><a href="#"><img name="gplus" src="$imagePath/gplus_IC.gif" width="32" height="32" border="0" alt="gplus"></a></span></p></td>
+            </tr>
+             <tr>
+              <td colspan="2"><p style="text-align:center;font-size: 12px;color: #999;"><span style="margin-right: 5px;">Facebook</span><span style="margin-right: 5px;">Twitter</span> <span>Google+</span></p></td>
+            </tr>
+             <tr>
+              <td colspan="2"><p style="color:#999;margin:10px; padding:0;border-bottom: 1px solid #999;font-size: 12px;"></p></td>
+            </tr>
+            <tr>
+              <td colspan="2"><p style="text-align:center;color:#999; font-size:12px;">&copy; 2015 - Yatra Online Private Limited. All right reserved.</p></td>
+            </tr>
+            <tr>
+              <td colspan="2">&nbsp;</td>
+            </tr>
+            <tr>
+              <td colspan="2"><p style="color:#999;margin:10px; padding:0;font-size: 12px;"><span style="font-weight:bold">Important: </span>Please do not reply to this email. It has been sent from an email account that is unattended. Please add <span><a href="#" style="text-decoration:none;  color: rgb(83, 165, 245);">donotreply@yatra.com</a></span> to your account list and address book to ensure that you receive   communication related to your booking from <span><a href="#" style="text-decoration:none; color: rgb(83, 165, 245);">Yatra.com</a></span>. <span><a href="#" style="text-decoration:none; color: rgb(83, 165, 245);">Unsubscribe</a></span></p></td>
+            </tr>
+      </tbody>
+    </table>
+  </body>
+</html>

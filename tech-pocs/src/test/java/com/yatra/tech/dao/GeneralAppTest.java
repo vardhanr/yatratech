@@ -8,12 +8,10 @@ import java.util.Map;
 import org.apache.log4j.Logger;
 import org.junit.Assert;
 import org.junit.Test;
-import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.test.context.ContextConfiguration;
-import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import com.yatra.tech.client.RestClient;
+import com.yatra.tech.config.BaseTestConfig;
 import com.yatra.tech.dto.ExcelLineItem;
 import com.yatra.tech.dto.RestRequest;
 import com.yatra.tech.dto.RestResponse;
@@ -24,9 +22,8 @@ import com.yatra.tech.service.ABFUserLogService;
 import com.yatra.tech.service.ExcelConverterService;
 import com.yatra.tech.service.TransactionService;
 
-@RunWith(SpringJUnit4ClassRunner.class)
-@ContextConfiguration(classes = { AppTestConfig.class })
-public class GeneralAppTest {
+
+public class GeneralAppTest extends BaseTestConfig {
 
 	private static Logger logger = Logger.getLogger(GeneralAppTest.class);
 	
