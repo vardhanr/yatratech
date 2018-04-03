@@ -8,7 +8,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.yatra.tech.dao.ABFUserAuthorizationDAO;
+import com.yatra.tech.dao.UserAddOnDao;
 import com.yatra.tech.entities.ABFUserAuthorization;
+import com.yatra.tech.entities.YatraAddon;
 import com.yatra.tech.service.ABFUserAuthorizationService;
 
 @Service("abfUserAuthorizationService")
@@ -17,6 +19,9 @@ public class ABFUserAuthorizationServiceImpl implements ABFUserAuthorizationServ
 
 	@Autowired
 	private ABFUserAuthorizationDAO abfUserAuthorizationDao;
+	
+	@Autowired
+	private UserAddOnDao userAddOnDao;
 
 	@Override
 	public List<ABFUserAuthorization> findAll() {
@@ -40,5 +45,10 @@ public class ABFUserAuthorizationServiceImpl implements ABFUserAuthorizationServ
 
 	public void setAbfUserAuthorizationDao(ABFUserAuthorizationDAO abfUserAuthorizationDao) {
 		this.abfUserAuthorizationDao = abfUserAuthorizationDao;
+	}
+
+	@Override
+	public YatraAddon getAddon(String ttId, Long addonId) {
+		return this.userAddOnDao.getAddon(ttId, addonId);
 	}
 }

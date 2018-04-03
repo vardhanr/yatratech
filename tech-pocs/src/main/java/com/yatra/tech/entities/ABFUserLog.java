@@ -3,9 +3,13 @@ package com.yatra.tech.entities;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Table;
+import javax.persistence.Version;
+
+import org.hibernate.annotations.OptimisticLocking;
 
 @Entity
 @Table(name = "abf_user_log")
+@OptimisticLocking
 public class ABFUserLog extends BaseEntity {
 	
 	@Column(name = "user_id", nullable = false)
@@ -26,6 +30,8 @@ public class ABFUserLog extends BaseEntity {
 	private String stage;
 	@Column(name = "tenant")
 	private String tenant;
+	@Version
+	private Long version;
 
 	public String getUserId() {
 		return userId;
@@ -97,5 +103,13 @@ public class ABFUserLog extends BaseEntity {
 
 	public void setTtid(String ttid) {
 		this.ttid = ttid;
+	}
+
+	public Long getVersion() {
+		return version;
+	}
+
+	public void setVersion(Long version) {
+		this.version = version;
 	}
 }

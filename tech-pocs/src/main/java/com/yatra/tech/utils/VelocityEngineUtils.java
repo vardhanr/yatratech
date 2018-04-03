@@ -19,7 +19,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
  *
  * @author rahul.vardhan
  */
-public abstract class VelocityEngineUtils {
+public class VelocityEngineUtils {
 
 	private static final Log logger = LogFactory.getLog(VelocityEngineUtils.class);
 
@@ -84,6 +84,8 @@ public abstract class VelocityEngineUtils {
 		velocityEngine.setProperty(RuntimeConstants.RESOURCE_LOADER, "classpath");
 		velocityEngine.setProperty("classpath.resource.loader.class", ClasspathResourceLoader.class.getName());
 		velocityEngine.init();
-		System.out.println(mergeTemplateIntoString(velocityEngine, "sendFlight.vm", "UTF-8", new HashMap<String, Object>()));
+		Map<String, Object> templateMap = new HashMap<String, Object>();
+		templateMap.put("name", "Rahul");
+		System.out.println(mergeTemplateIntoString(velocityEngine, "test-velocity.vm", "UTF-8", templateMap));
 	}
 }
