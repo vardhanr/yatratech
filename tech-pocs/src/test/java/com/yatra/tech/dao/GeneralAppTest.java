@@ -1,5 +1,9 @@
 package com.yatra.tech.dao;
 
+import java.awt.Container;
+import java.awt.Graphics;
+import java.awt.Insets;
+import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.FileWriter;
@@ -10,14 +14,29 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+import javax.swing.JEditorPane;
+import javax.swing.SwingUtilities;
+import javax.swing.text.EditorKit;
+import javax.swing.text.html.HTMLEditorKit;
+
 import org.apache.commons.io.FileUtils;
 import org.apache.log4j.Logger;
 import org.apache.velocity.app.VelocityEngine;
+import org.apache.velocity.tools.generic.DateTool;
 import org.junit.Assert;
 import org.junit.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.velocity.VelocityEngineUtils;
 
+import com.itextpdf.text.Document;
+import com.itextpdf.text.Element;
+import com.itextpdf.text.Rectangle;
+import com.itextpdf.text.pdf.ColumnText;
+import com.itextpdf.text.pdf.PdfWriter;
+import com.itextpdf.tool.xml.ElementList;
+import com.itextpdf.tool.xml.XMLWorkerHelper;
+import com.pdfcrowd.Pdfcrowd;
 import com.yatra.tech.client.RestClient;
 import com.yatra.tech.config.BaseTestConfig;
 import com.yatra.tech.dto.ExcelLineItem;
@@ -212,5 +231,106 @@ public class GeneralAppTest extends BaseTestConfig {
 		FileOutputStream fos = new FileOutputStream(ticketingPdf.getSuperPnr() + "-" + ticketingPdf.getPaxId() + ".pdf");
 		fos.write(ticketByteArray);
 		fos.close();
+	}
+	
+	@Test
+	public void testPDF() {
+		try {
+			String HTML = "<html xmlns=\"http://www.w3.org/1999/xhtml\" style=\"width: 360px;\"><head> <title>Flight E-ticket</title></head><body style=\"margin: 0; padding: 0; width: 360px;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"font-size:12px; font-family: arial;min-width:320px;max-width:360px;margin:0 auto;border:18px solid #F96E6C;\"> <tbody style=\"box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2);\"> <tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td height=\"16\" colspan=\"3\"></td></tr><tr> <td width=\"16\"></td><td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td width=\"100%\"> <div style=\"padding-bottom: 14px;\"> <div style=\"display: inline-block;vertical-align:middle; width: 60px; height: 25px;border: 1px solid #E4E4E4;padding: 6px 2px;border-radius: 3px;margin-right: 10px;\"> <img src=\"http://ns.yatracdn.com/common/images/fresco/mailer/airline-logo/CZ.gif\"/> </div><span style=\"vertical-align:middle;display: inline-block;color: #666666;\"> <span style=\"display:block; font-size: 14px;padding-bottom:4px;\"> <span style=\"color: #333333;\">China Southern Airlines</span> CZ - 3796/ 3027 </span> <span style=\"display:block; font-size: 12px;\">Economy</span> </span> </div></td></tr><tr> <td width=\"100%\"> <div style=\"padding-bottom: 4px;;color: #999999;font-size: 12px;\"> <span style=\"display:inline-block;width: 49%; text-align:left\">PNR</span> <span style=\"display:inline-block;width: 49%; text-align:right\">Booking Ref No.</span> </div><div style=\"color: #333333;font-size: 12px;\"> <span style=\"display:inline-block;width: 49%; text-align:left\">KHF7RL</span> <span style=\"display:inline-block;width: 49%; text-align:right\">5234567890</span> </div></td></tr></table> </td><td width=\"16\"></td></tr><tr> <td height=\"16\" colspan=\"3\"></td></tr></table> </td></tr><tr> <td height=\"1\" colspan=\"3\" style=\"border-top: 1px solid #c3c6ca;display: block;opacity: 0.5;\"></td></tr><tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td height=\"16\" colspan=\"3\"></td></tr><tr> <td width=\"16\"></td><td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td style=\"padding-bottom: 5px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 12px; color: #666666;\"> <td width=\"33.33%\" style=\"text-align: left;\">Yiwu</td><td width=\"33.33%\" style=\"text-align: center;\">2 Stops, via LosVegas, Guangzhou</td><td width=\"33.33%\" style=\"text-align: right;\">New Delhi</td></tr></table> </td></tr><tr> <td style=\"padding-bottom: 5px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"color: #333333;\"> <td width=\"33.33%\" style=\"font-weight: bold; text-align: left; font-size: 30px; text-transform: uppercase;\">YIW</td><td width=\"33.33%\" style=\"text-align: center; font-size: 30px;\"> <div> <span style=\"text-align: center ;width: 74px; height: 1px; padding-top: 3px; display: inline-block;border-top: 1px solid #e4e4e4;\"> <span style=\"width: 5px;height: 5px; border-radius: 50%; display: inline-block;background: #e4e4e4; float:left; position: relative; top: -6px\"></span> <span style=\"position: relative;top: -10px;width: 25px;height: 12px;display: inline-block;background: #fff;\"> <img width=\"13\" height=\"12\" src=\"https://ns.yatracdn.com/common/images/emailers/flights/plane.jpg\"/> </span> <span style=\"width: 5px;height: 5px; border-radius: 50%; display: inline-block;background: #e4e4e4; float: right; position: relative; top: -6px\"></span> </span> </div></td><td width=\"33.33%\" style=\"font-weight: bold; text-align: right; font-size: 30px; text-transform: uppercase;\">DEL</td></tr></table> </td></tr><tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 12px; color: #666666;\"> <td width=\"46%\" style=\"text-align: left;\">Yiwu</td><td width=\"1%\" style=\"text-align: center;\"></td><td width=\"46%\" style=\"text-align: right;\">Indira Gandhi</td></tr></table> </td></tr><tr> <td height=\"1\" colspan=\"3\" style=\"border-top: 1px solid #c3c6ca;display: block;opacity: 0.5; margin-top: 16px; margin-bottom: 16px\"></td></tr><tr> <td style=\"padding-bottom: 5px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 12px; color: #999999;\"> <td width=\"46%\" style=\"text-align: left;\">Departure</td><td width=\"1%\" style=\"text-align: center;\"></td><td width=\"46%\" style=\"text-align: right;\">Arrival</td></tr></table> </td></tr><tr> <td style=\"padding-bottom: 5px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 24px; color: #333333;\"> <td width=\"46%\" style=\"text-align: left;\">07:50 AM</td><td width=\"1%\" style=\"text-align: center;\"></td><td width=\"46%\" style=\"text-align: right;\">10:50 AM</td></tr></table> </td></tr><tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 12px; color: #666666;\"> <td width=\"46%\" style=\"text-align: left;\">Fri, 25 May</td><td width=\"1%\" style=\"text-align: center;\"></td><td width=\"46%\" style=\"text-align: right;\">Sun, 27 May</td></tr></table> </td></tr><tr> <td height=\"1\" colspan=\"3\" style=\"border-top: 1px solid #c3c6ca;display: block;opacity: 0.5; margin-top: 16px; margin-bottom: 16px\"></td></tr><tr> <td colspan=\"3\" style=\"display: block;font-size: 12px; color: #999999;padding-bottom: 5px;\">Passenger</td></tr><tr> <td colspan=\"3\" style=\"display: block; font-size: 24px; color: #333333;\">Mr. Arun Kohli</td></tr><tr> <td style=\"padding-bottom: 5px;padding-top: 14px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"5\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;table-layout: fixed;width: 100%;\"> <tr style=\"font-size: 12px; color: #666666;\"> <td style=\"text-align: center; vertical-align: top;\"> <div style=\"min-width: 62px; max-width: 86px; padding-top: 10px; padding-bottom: 10px; margin: 0 8px; border: solid 1px #e4e4e4; border-radius: 4px; background-color: #ffffff;\"> <img src=\"https://ns.yatracdn.com/common/images/emailers/flights/baggage-icon.jpg\"/> </div><div style=\"padding-top: 5px; min-width: 62px; max-width: 86px;\">1 piece</div></td></tr></table> </td></tr></table> </td><td width=\"16\"></td></tr></table> </td></tr><tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td width=\"16\"> <div style=\"width: 0; height: 0; border-top: 16px solid transparent;border-bottom: 16px solid transparent; border-left: 16px solid #f96e6c; box-shadow: -10px 0px 0px #f96e6c;\"></div></td><td> <div style=\"text-align: center ;width: 100%; height: 1px; margin-top: 3px; display: inline-block;border-top: 1px dashed #a2a6a9;\"></div></td><td width=\"16\"> <div style=\"width: 0; height: 0; border-top: 16px solid transparent;border-bottom: 16px solid transparent; border-right: 16px solid #f96e6c; box-shadow: 10px 0px 0px #f96e6c;\"></div></td></tr><tr> <td colspan=\"3\" style=\"text-align: center;\"> <div> <img src=\"https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyf2C9wJ1UGKL4-dodk7NNH0HHrvUVJf51MDcwKfd0Yav5emah8g\"/> </div></td></tr><tr> <td height=\"16\" colspan=\"3\"></td></tr></table> </td></tr></tbody> </table></body></html>";
+			
+            // create the API client instance
+            Pdfcrowd.HtmlToImageClient client = new Pdfcrowd.HtmlToImageClient("rahulvardhan", "85f88ed8de348931d8e8d9822313cec9");
+
+            client.setScreenshotWidth(360);
+            // configure the conversion
+            client.setOutputFormat("png");
+
+            // run the conversion and write the result to a file
+            byte[] bytes = client.convertString(HTML);
+            
+            FileUtils.writeByteArrayToFile(new File("D:/test.jpg"), bytes);
+            
+        }
+        catch(Pdfcrowd.Error why) {
+            // report the error to the standard error stream
+            System.err.println("Pdfcrowd Error: " + why);
+        }
+        catch(Exception why) {
+            // report the error to the standard error stream
+            System.err.println("IO Error: " + why.getMessage());
+        }
+
+	}
+	
+	@Test
+	public void create() {
+		String src = "https://www.yatra.com";
+		int width = 1000;
+		int height = 1000;
+		BufferedImage image = null;
+		JEditorPane pane = new JEditorPane();
+		EditorKit kit = new HTMLEditorKit();
+		pane.setEditorKit(kit);
+		pane.setEditable(false);
+		pane.setMargin(new Insets(0, 0, 0, 0));
+		try {
+			pane.setPage(src);
+			image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+			Graphics g = image.createGraphics();
+			Container c = new Container();
+			SwingUtilities.paintComponent(g, pane, c, 0, 0, width, height);
+			g.dispose();
+			File outputfile = new File("D:/image.jpg");
+			ImageIO.write(image, "jpg", outputfile);
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+	}
+	
+	@Test
+	public void testISODateInVelocity() {
+		try {
+			Map<String, Object> map = new HashMap<>();
+			map.put("name", "Rahul");
+			map.put("dateTool", new DateTool());
+			String html = VelocityEngineUtils.mergeTemplateIntoString(this.velocityEngine, "test-velocity.vm", "UTF-8", map);
+			System.out.println(html);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+	
+	@Test
+	public void testHTMLHeight() throws Exception {
+		String html = "<body style=\"margin: 0; padding: 0; width: 360px;\"> <table border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"font-size:12px; font-family: arial;min-width:320px;max-width:360px;margin:0 auto;border:18px solid #F96E6C;\"> <tbody style=\"box-shadow: 0 6px 10px 0 rgba(0, 0, 0, 0.2);\"> <tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td height=\"16\" colspan=\"3\"></td></tr><tr> <td width=\"16\"></td><td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td width=\"100%\"> <div style=\"padding-bottom: 14px;\"> <div style=\"display: inline-block;vertical-align:middle; width: 60px; height: 25px;border: 1px solid #E4E4E4;padding: 6px 2px;border-radius: 3px;margin-right: 10px;\"> <img src=\"http://ns.yatracdn.com/common/images/fresco/mailer/airline-logo/CZ.gif\"/> </div><span style=\"vertical-align:middle;display: inline-block;color: #666666;\"> <span style=\"display:block; font-size: 14px;padding-bottom:4px;\"> <span style=\"color: #333333;\">China Southern Airlines</span> CZ - 3796/ 3027 </span> <span style=\"display:block; font-size: 12px;\">Economy</span> </span> </div></td></tr><tr> <td width=\"100%\"> <div style=\"padding-bottom: 4px;;color: #999999;font-size: 12px;\"> <span style=\"display:inline-block;width: 49%; text-align:left\">PNR</span> <span style=\"display:inline-block;width: 49%; text-align:right\">Booking Ref No.</span> </div><div style=\"color: #333333;font-size: 12px;\"> <span style=\"display:inline-block;width: 49%; text-align:left\">KHF7RL</span> <span style=\"display:inline-block;width: 49%; text-align:right\">5234567890</span> </div></td></tr></table> </td><td width=\"16\"></td></tr><tr> <td height=\"16\" colspan=\"3\"></td></tr></table> </td></tr><tr> <td height=\"1\" colspan=\"3\" style=\"border-top: 1px solid #c3c6ca;display: block;opacity: 0.5;\"></td></tr><tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td height=\"16\" colspan=\"3\"></td></tr><tr> <td width=\"16\"></td><td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td style=\"padding-bottom: 5px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 12px; color: #666666;\"> <td width=\"33.33%\" style=\"text-align: left;\">Yiwu</td><td width=\"33.33%\" style=\"text-align: center;\">2 Stops, via LosVegas, Guangzhou</td><td width=\"33.33%\" style=\"text-align: right;\">New Delhi</td></tr></table> </td></tr><tr> <td style=\"padding-bottom: 5px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"color: #333333;\"> <td width=\"33.33%\" style=\"font-weight: bold; text-align: left; font-size: 30px; text-transform: uppercase;\">YIW</td><td width=\"33.33%\" style=\"text-align: center; font-size: 30px;\"> <div> <span style=\"text-align: center ;width: 74px; height: 1px; padding-top: 3px; display: inline-block;border-top: 1px solid #e4e4e4;\"> <span style=\"width: 5px;height: 5px; border-radius: 50%; display: inline-block;background: #e4e4e4; float:left; position: relative; top: -6px\"></span> <span style=\"position: relative;top: -10px;width: 25px;height: 12px;display: inline-block;background: #fff;\"> <img width=\"13\" height=\"12\" src=\"https://ns.yatracdn.com/common/images/emailers/flights/plane.jpg\"/> </span> <span style=\"width: 5px;height: 5px; border-radius: 50%; display: inline-block;background: #e4e4e4; float: right; position: relative; top: -6px\"></span> </span> </div></td><td width=\"33.33%\" style=\"font-weight: bold; text-align: right; font-size: 30px; text-transform: uppercase;\">DEL</td></tr></table> </td></tr><tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 12px; color: #666666;\"> <td width=\"46%\" style=\"text-align: left;\">Yiwu</td><td width=\"1%\" style=\"text-align: center;\"></td><td width=\"46%\" style=\"text-align: right;\">Indira Gandhi</td></tr></table> </td></tr><tr> <td height=\"1\" colspan=\"3\" style=\"border-top: 1px solid #c3c6ca;display: block;opacity: 0.5; margin-top: 16px; margin-bottom: 16px\"></td></tr><tr> <td style=\"padding-bottom: 5px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 12px; color: #999999;\"> <td width=\"46%\" style=\"text-align: left;\">Departure</td><td width=\"1%\" style=\"text-align: center;\"></td><td width=\"46%\" style=\"text-align: right;\">Arrival</td></tr></table> </td></tr><tr> <td style=\"padding-bottom: 5px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 24px; color: #333333;\"> <td width=\"46%\" style=\"text-align: left;\">07:50 AM</td><td width=\"1%\" style=\"text-align: center;\"></td><td width=\"46%\" style=\"text-align: right;\">10:50 AM</td></tr></table> </td></tr><tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr style=\"font-size: 12px; color: #666666;\"> <td width=\"46%\" style=\"text-align: left;\">Fri, 25 May</td><td width=\"1%\" style=\"text-align: center;\"></td><td width=\"46%\" style=\"text-align: right;\">Sun, 27 May</td></tr></table> </td></tr><tr> <td height=\"1\" colspan=\"3\" style=\"border-top: 1px solid #c3c6ca;display: block;opacity: 0.5; margin-top: 16px; margin-bottom: 16px\"></td></tr><tr> <td colspan=\"3\" style=\"display: block;font-size: 12px; color: #999999;padding-bottom: 5px;\">Passenger</td></tr><tr> <td colspan=\"3\" style=\"display: block; font-size: 24px; color: #333333;\">Mr. Arun Kohli</td></tr><tr> <td style=\"padding-bottom: 5px;padding-top: 14px;\"> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"5\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;table-layout: fixed;width: 100%;\"> <tr style=\"font-size: 12px; color: #666666;\"> <td style=\"text-align: center; vertical-align: top;\"> <div style=\"min-width: 62px; max-width: 86px; padding-top: 10px; padding-bottom: 10px; margin: 0 8px; border: solid 1px #e4e4e4; border-radius: 4px; background-color: #ffffff;\"> <img src=\"https://ns.yatracdn.com/common/images/emailers/flights/baggage-icon.jpg\"/> </div><div style=\"padding-top: 5px; min-width: 62px; max-width: 86px;\">1 piece</div></td></tr></table> </td></tr></table> </td><td width=\"16\"></td></tr></table> </td></tr><tr> <td> <table align=\"center\" border=\"0\" cellpadding=\"0\" cellspacing=\"0\" width=\"100%\" bgcolor=\"#ffffff\" style=\"border-collapse: collapse;\"> <tr> <td width=\"16\"> <div style=\"width: 0; height: 0; border-top: 16px solid transparent;border-bottom: 16px solid transparent; border-left: 16px solid #f96e6c; box-shadow: -10px 0px 0px #f96e6c;\"></div></td><td> <div style=\"text-align: center ;width: 100%; height: 1px; margin-top: 3px; display: inline-block;border-top: 1px dashed #a2a6a9;\"></div></td><td width=\"16\"> <div style=\"width: 0; height: 0; border-top: 16px solid transparent;border-bottom: 16px solid transparent; border-right: 16px solid #f96e6c; box-shadow: 10px 0px 0px #f96e6c;\"></div></td></tr><tr> <td colspan=\"3\" style=\"text-align: center;\"> <div> <img src=\"http://local.yatra.com:8080/air-pay-book-service/dom/barcode/generate/barcode?superPnr=5234567890&amp;paxName=Kohli/Arun Mr&amp;airlineCode=CZ&amp;origin=YIW&amp;destination=DEL&amp;dayOfYear=125&amp;flightNumber=3796&amp;airlinePnr=KHF7RL&amp;seatNo=&amp;cabin=Economy&amp;format=aztec\"/> </div></td></tr><tr> <td height=\"16\" colspan=\"3\"></td></tr></table> </td></tr></tbody> </table></body>";
+		String CSS = "";
+		ElementList el = XMLWorkerHelper.parseToElementList(html, CSS);
+        File file = new File("D:/test.pdf");
+		float width = 360;
+        float max = 10000;
+        ColumnText ct = new ColumnText(null);
+        ct.setSimpleColumn(new Rectangle(width, max));
+        for (Element e : el) {
+            ct.addElement(e);
+        }
+        ct.go(true);
+        float y = ct.getYLine();
+        System.out.println("Width : " + width + " Height : " + (max - y));
+        Rectangle pagesize = new Rectangle(width, max - y);
+        // step 1
+        Document document = new Document(pagesize, 0, 0, 0, 0);
+        // step 2
+        PdfWriter writer = PdfWriter.getInstance(document, new FileOutputStream(file));
+        // step 3
+        document.open();
+        // step 4
+        ct = new ColumnText(writer.getDirectContent());
+        ct.setSimpleColumn(pagesize);
+        for (Element e : el) {
+            ct.addElement(e);
+        }
+        ct.go();
+        // step 5
+        document.close();
 	}
 }

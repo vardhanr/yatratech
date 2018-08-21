@@ -2,10 +2,14 @@ package com.yatra.tech.configuration;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
 
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.http.HttpMethod;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.stereotype.Service;
 
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -18,6 +22,7 @@ import com.yatra.tech.dto.RestResponse;
 import com.yatra.tech.entities.YatraAddon;
 import com.yatra.tech.service.impl.ABFUserAuthorizationServiceImpl;
 
+@Service
 public class ApplicationRunner {
 	
 	public static void main(String[] args) {
@@ -25,8 +30,32 @@ public class ApplicationRunner {
 //		testSaveReview(context);
 //		testBookingJson();
 //		testEmailChanges(context);
-		
-		testAddon(context);
+//		testAddon(context);
+		ApplicationRunner runner = context.getBean(ApplicationRunner.class);
+		runner.testAsync();
+	}
+	
+	public void testAsync() {
+		ExecutorService e = Executors.newFixedThreadPool(100);
+		for (int i = 0; i < 100; i++) {
+			System.out.println("Counter external : " + i);
+			/*final int j = i;
+			Runnable task = () -> {
+				testAsync(j);
+			};
+			e.submit(task);*/
+			testAsync(i);
+		}
+	}
+	
+	@Async
+	public void testAsync(int i) {
+		try {
+			System.out.println("Counter internal : " + i);
+			Thread.sleep(2000);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 	}
 	
 	public static void testAddon(ApplicationContext context) {
