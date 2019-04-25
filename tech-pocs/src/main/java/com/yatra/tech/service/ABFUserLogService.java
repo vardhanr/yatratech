@@ -13,4 +13,6 @@ public interface ABFUserLogService {
 	public void saveOrUpdate(ABFUserLog userLog);
 
 	public void saveOrUpdate(List<ABFUserLog> list);
+	
+	public ABFUserLog findById(Long id);
 }

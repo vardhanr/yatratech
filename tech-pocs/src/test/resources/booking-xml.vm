@@ -1,0 +1,39 @@
+<BookingXml>
+	$!POS
+	    
+	    $!masterDetails
+		$!dispatchDetails
+		$!clientDetails
+		$!billingDetails
+		$!deliveryDetails
+		
+		<BookingDetails EntityId="" BookingType="" AirSell="Yes" BookingRef="" MOBookingRef=$moBookingRef CarSell="No" HotelSell="No" InsuranceSell="No" Note="Confirm B" OtherProductSell="No" PackagePrice="No" VisaWarning="" PushToARQ="NO" Engagement_No=""
+	                Trip_Id="" Req_Id="" Humsafar_Id="" ApprovedStatus="" metaRefnumber="" TenantId="200" TenantName="desktop" MarketPlaceParams="" MultiTicket="false"/>
+		
+		
+		$!PassengerInfo
+		
+		<OtherProducts>
+		<Product>$productName</Product>
+		<ProductSupplier>$productSupplier</ProductSupplier>
+		<ProductCity/>
+	    <ProductContactNo>$productContactNumber</ProductContactNo>
+		<ProductContactName>$productContactName</ProductContactName>
+		<ProductEmail>$productEmail</ProductEmail>
+		<ProductTime/>
+		<ProductGrossAmount>$insuranceGrossPrice</ProductGrossAmount>
+		<ProductNetAmount>$insuranceNetPrice</ProductNetAmount>
+		<ProductDate>$productDate</ProductDate>
+		<ProductStartDate>$productDate</ProductStartDate>
+		<ProductEndDate>$productDate</ProductEndDate>
+		<NoOfPax>1</NoOfPax>
+		<ProductDescription>$insuranceId</ProductDescription>
+		<PaxId>1</PaxId>
+		<PolicyNo>$insuranceId</PolicyNo>
+		<AgeGroup/>
+		<PolicyCoverage/>
+		<ProductCategory/>
+		<NomineeName/>
+		<Status>OK</Status>
+	</OtherProducts>
+</BookingXML>

@@ -41,4 +41,9 @@ public class ABFUserLogServiceImpl implements ABFUserLogService {
 	public void setAbfUserLogDao(ABFUserLogDAO abfUserLogDao) {
 		this.abfUserLogDao = abfUserLogDao;
 	}
+
+	@Override
+	public ABFUserLog findById(Long id) {
+		return this.abfUserLogDao.findById(id);
+	}
 }

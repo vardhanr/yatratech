@@ -1,0 +1,1302 @@
+<!-- Start Initialization of Global Parameters -->
+#set($onlinecancellationfee = $onlinecancellationfee)
+#set($offlinecancellationfee = $offlinecancellationfee)
+#set($internationalreschedulingfee = $internationalreschedulingfee)
+#set($properties = $properties)
+#set($cities = $confirmationJson.data.cityNames)
+#set($airlines = $confirmationJson.data.airlineNames)
+#set($cancellation = $confirmationJson.cancellation)
+#set($stringUtils = $stringUtils)
+#set($mathTool = $math)
+#set($date = $date)
+#set($fltSchedule = $confirmationJson.data.fltSchedule)
+#set($paxList = $confirmationJson.passengerList)
+#set($paxDetList = $confirmationJson.paxDetailList)
+#set($ticketList = $confirmationJson.ticketList)
+#set($isSpecialConditionAirline = 'false')
+#set($isHandBaggeOnlyAirline = 'false')
+#set($isAnyLegHandBaggage = 'false')
+#set($isDestAgatti = 'false')
+#set($isOrgJammuSrinagarLeh = 'false')
+#set($isOriginDestKathmandu = 'false')
+#set($isIndigoAirline = 'false')
+#set($barcodeImagePath = $barcodeImagePath)
+#set($tenant = $confirmationJson.tenant)
+#set($source = $confirmationJson.source)
+#set($tripType = $confirmationJson.tripType)
+#set($isSTU = $confirmationJson.isSTU)
+#set($isDestHongKong = 'false')
+#set($paxId = $paxId)
+#if($confirmationJson.tenant.contains("int"))
+  	#set($isTenantInt = 'true')
+#else
+	#set($isTenantInt = 'false')
+#end
+#set($upSell = $confirmationJson.data.upSell)
+
+#if($confirmationJson.paymentDetail.superPnr ne '')
+	#set($superPnr = $confirmationJson.paymentDetail.superPnr)
+#else
+	#set($superPnr = $confirmationJson.paymentDetail.bookingRefNumber)
+#end
+
+#set($count =1)
+#foreach($key in $fltSchedule)
+	#set($count = $count+1)
+#end
+
+#set($isSpecialReturn = $confirmationJson.isSpecialReturn)
+#if($tripType eq "R" and $count eq 1 )
+  #set($isSpecialReturn = true)
+#end
+<!-- End Initialization of Global Parameters -->
+
+#if($confirmationJson.ycpAddons)
+    #foreach($addonCode in  $confirmationJson.ycpAddons)
+        #if($addonCode == 'DFC')
+            #set($isDFC = 'true')
+            #set($ycpUrl = 'https://www.yatra.com/offer/details/yatras-cancellation-protection')
+        #elseif($addonCode == 'BBG')
+            #set($isBBG = 'true')
+            #set($ycpUrl = 'https://www.yatra.com/offer/details/yatra-assure-program')
+        #end
+    #end
+#end
+
+<!-- Start Macros -->
+#macro( putAmount $val )
+	#if($val ne "Not Available")
+		Rs.$val
+	#else
+		$val
+	#end
+#end
+<!-- End of Macros -->
+
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <meta name="viewport" content="width=device-width, user-scalable=no"/>
+  <title></title>
+</head>
+<body>
+<table width="100%" border="0" cellspacing="0" cellpadding="0" bgcolor="#ffffff" align="center" style="min-width:320px;font-family:arial" >
+
+<tr> <td height="10"></td> </tr>
+
+<!-- Start TopHeader -->
+<tr>
+	<td align="center">
+		<table align="center" border="0" cellspacing="0" cellpadding="0" style="max-width:664px; -webkit-text-size-adjust: none; text-align:left; background-color:#f0f0f0; padding:10px; border-bottom: 1px solid #ccc;">
+		   <tr>
+		      <td width="664">
+		         <table width="188" align="left" border="0" cellspacing="0" cellpadding="0">
+		            <tr> <td height="8" /> </tr>
+		            <tr>
+		               <td>
+		                  <a href="www.yatra.com" target="_blank">
+                             <img src="https://ns.yatracdn.com/common/images/emailers/mailer_logo.png" width="120" alt="Yatra.com" title="Yatra.com" border="0" style="font-family:Arial, Helvetica, sans-serif; font-size:25px; color:#0595b7;" vspace="0" hspace="0" align="left" />
+                          </a>
+		               </td>
+		            </tr>
+		            <tr> <td height="8" /> </tr>
+		         </table>
+		         <table width="" border="0" cellspacing="0" cellpadding="0" align="right" style="font-family:arial; font-size:12px; color:#555555; text-align:center;">
+		            <tr>
+		               <td colspan="2" width="150" height="22" valign="top" style="font-size:14px; color:#666;">
+		                  <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">Download Yatra App</p>
+		               </td>
+		            </tr>
+		            <tr>
+		               <td width="21" height="25" align="center" valign="middle">
+		                  <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">
+		                     <a href="https://play.google.com/store/apps/details?id=com.yatra.base&amp;referrer=utm_source%3DWebsiteAppDL%26utm_medium%3Ddirect%26utm_campaign%3DWebsiteAppDL" target="_blank" style="text-decoration: none; color:#666;">
+		                        <img src="$imagePath/Android-Icon.png" width="21" height="21" alt="android icon" title="Android" border="0" vspace="3" hspace="0" align="center" />
+		                        <br />
+		                        Android
+		                     </a>
+		                  </p>
+		               </td>
+		               <td width="21" align="center">
+		                  <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">
+		                     <a target="_blank" href="https://itunes.apple.com/in/app/yatra.com/id730234679?mt=8" style="text-decoration: none; color:#666;">
+		                        <img src="$imagePath/Apple-Icon.png" width="21" height="21" alt="iOS icon.com" title="iOS" border="0" vspace="3" hspace="0" align="center" />
+		                        <br />
+		                        iOS
+		                     </a>
+		                  </p>
+		               </td>
+		            </tr>
+		         </table>
+		      </td>
+		   </tr>
+		</table>
+	</td>
+</tr>
+<!-- End TopHeader -->
+
+
+<!-- Start Header Info-->
+<tr>
+	<td height="10" align="center" width="664">
+	   <table align="center" width="664" border="0" cellspacing="0" cellpadding="0" style="text-align:left;">
+	      <tr>
+	         <td>
+	            <table align="left" border="0" cellspacing="0" cellpadding="0" style="font-family:arial; font-size:14px;">
+	               <tr>
+	                  <td width="65" height="50" style="color:#666;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">FLIGHT</p></td>
+	                  <td width="90"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">E-TICKET</p></td>
+	                  <td width="170" style="color:#666;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">YATRA REF NUMBER</p></td>
+	                  <td width="80"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$superPnr</p></td>
+					  <td width="90" style="color:#666; padding: 0 5px 0 0;"><img style="width:200px;float:right;"
+                        src="$barcodeImagePath?superPnr=$superPnr&amp;paxId=$paxId&amp;source=$source" />
+                      </td>
+	               </tr>
+	            </table>
+	         </td>
+	      </tr>
+	     
+	   </table>
+	</td>
+</tr>
+<!-- End Header Info-->
+
+<!--Specer -->
+<!-- <tr bgcolor="#ffffff"> <td colspan="3" height="25"></td> </tr> -->
+<!--Specer -->
+
+
+<!-- Start Pax Details -->
+<tr>
+   <td height="10" align="center" width="664">
+      <table align="center" width="664" border="0" cellspacing="0" cellpadding="0" style="max-width:664px; border:1px solid #ccc; border-radius: 10px;">
+         <tr>
+            <td>
+               <table align="center" width="664" border="0" cellspacing="0" cellpadding="0" style="max-width:664px; -webkit-text-size-adjust: none; text-align:left; border-bottom: 1px dotted #ccc; padding:10px;">
+                  <tr>
+                     <td>
+                        <table align="left" border="0" cellspacing="0" cellpadding="0" style="font-family:arial; font-size:14px;">
+                           <tr>
+                              <td width="200" style="font-size:14px; color:#666;">
+                                 <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">PASSENGERS DETAILS</p>
+                              </td>
+                           </tr>
+                        </table>
+                     </td>
+                  </tr>
+               </table>
+               <table align="center" width="664" border="0" cellspacing="0" cellpadding="0" style="max-width:664px; -webkit-text-size-adjust: none; text-align:left; padding:10px 5px; font-size:12px;">
+                  <tr> <!-- L-363 -->
+                     <td>
+                        <table align="left" border="0" cellspacing="0" cellpadding="0" style="font-family:arial, sans-serif; font-size:12px;">
+                           <thead>
+                              <tr>
+                                 <td width="220" height="30" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                    <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">NAME</p>
+                                 </td>
+                                 <td width="100" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                    <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">DESTINATION</p>
+                                 </td>
+                                 <td width="80" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                    <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">MEALS</p>
+                                 </td>
+                                 <td width="125" valign="top" style="color:#666; padding: 0 5px 0 0;">
+                                    <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">BAGGAGE</p>
+                                 </td>
+                                 <td width="100" valign="top" style="color:#666;">
+                                    <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">SEAT NO.</p>
+                                 </td>
+                              </tr>
+                           </thead>
+                           #if($source eq "Flights")
+                              <tbody>
+                                 #set($paxCount=0)
+                                 #foreach($pax in $paxList)
+                                    #set($sectorCount=-1)
+                                    #set($paxCount=$paxCount+1)
+                                    #set($other="NA")
+                                    #set($returnother="NA")
+                                    <tr>
+                                       <td width="220" height="30" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                          <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"><strong style="font-size:14px;">$pax.title $pax.fname $pax.mname $pax.lname</strong> ($stringUtils.split($pax.paxClass," ").get(0))<br></br> Insurance Policy :  <br style="line-height:2px;" />
+                                             $#if(($pax.addons.ins) && ($pax.addons.ins.id!=""))$pax.addons.ins.id #else NA #end</p>
+                                       </td>
+                                       #foreach($key in $fltSchedule)
+                                          #set($sectorCount=$sectorCount+1)
+                                          #set($segmentCount = -1)
+                                          #foreach($fs in $key.get(0).OD.get(0).FS)
+                                             #set($segmentCount = $segmentCount+1)
+                                             #set($specialReq = "NA")
+                                             #set($meal = "NA")
+                                             #set($mealStatus = "")
+                                             #set($bag = "NA")
+                                             #set($seat = "NA")
+                                             #if($segmentCount ne 0 or $sectorCount ne 0)
+                                                </tr>
+                                                <tr>
+                                                   <td width="220" height="30" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                                      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"><strong style="font-size:14px;"></strong></p>
+                                                   </td>
+                                             #end
+                                             <td width="100" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                                <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$fs.dac - $fs.aac</p>
+                                             </td>
+                                             #if($sectorCount == 0)
+                                                #if(($pax.addons.meal) && ($pax.addons.meal!="") && ($pax.addons.meal.o.size() > 0) && ($pax.addons.meal.o.size() > $segmentCount) && ($pax.addons.meal.o.get($segmentCount).isdata == 'true'))
+                                                   #set($meal = $pax.addons.meal.o.get($segmentCount).desc)
+                                                   #if("$!pax.addons.meal.o.get($segmentCount).status" == "")
+                                                      #set($mealStatus = "")
+                                                   #else
+                                                      #set($mealStatus = " "+'('+$pax.addons.meal.o.get($segmentCount).status+')')
+                                                   #end
+                                                #end
+                                             #elseif(($pax.addons.meal) && ($pax.addons.meal!="") && ($pax.addons.meal.r.size() > 0) && ($pax.addons.meal.r.get($segmentCount).isdata == 'true'))
+                                                #set($meal = $pax.addons.meal.r.get($segmentCount).desc)
+                                                #if("$!pax.addons.meal.r.get($segmentCount).status" == "")
+                                                   #set($mealStatus = "")
+                                                #else
+                                                   #set($mealStatus = " "+'('+$pax.addons.meal.r.get($segmentCount).status+')')
+                                                #end
+                                             #end
+                                             <td width="100" valign="top" style="color:#666; padding: 0 10px 10px 0;">
+                                                <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$meal $mealStatus</p>
+                                             </td>
+                                             #if($sectorCount == 0)
+                                                #if(($pax.addons.bag) && ($pax.addons.bag!="") && ($pax.addons.bag.o.size() > 0) && ($segmentCount<$pax.addons.bag.o.size()) && ($pax.addons.bag.o.get($segmentCount).isdata == 'true'))
+                                                   #set($bag =$pax.addons.bag.o.get($segmentCount).desc)
+                                                #end
+                                             #elseif(($pax.addons.bag) && ($pax.addons.bag!="") && ($pax.addons.bag.r.size() > 0) && ($segmentCount<$pax.addons.bag.r.size()) && ($pax.addons.bag.r.get($segmentCount).isdata == 'true'))
+                                                #set($bag = $pax.addons.bag.r.get($segmentCount).desc)
+                                             #elseif($bag ne "NA")
+                                                #set($bag = "$bag (Paid)")
+                                             #end
+
+                                             #if($sectorCount == 0)
+                                                #if(($pax.addons.seats) && ($pax.addons.seats!="") && ($pax.addons.seats.o.size() > 0) && ($segmentCount<$pax.addons.seats.o.size()) && ($pax.addons.seats.o.get($segmentCount).isdata == 'true'))
+                                                   #set($seat =$pax.addons.seats.o.get($segmentCount).seatValue+" "+'('+$pax.addons.seats.o.get($segmentCount).status+')')
+                                                #end
+                                             #elseif(($pax.addons.seats) && ($pax.addons.seats!="") && ($pax.addons.seats.r.size() > 0) && ($segmentCount<$pax.addons.seats.r.size()) && ($pax.addons.seats.r.get($segmentCount).isdata == 'true'))
+                                                #set($seat = $pax.addons.seats.r.get($segmentCount).seatValue+" "+'('+$pax.addons.seats.r.get($segmentCount).status+')')
+                                             #end
+
+                                             #if($fs.bag and $fs.bag ne "" and $fs.bag ne "0 kg" and $fs.bag ne "0 Kg" and $fs.bag ne "0 KG" and $fs.bag ne " ")
+                                             	#if($isHandBaggeOnlyAirline=='true')
+                                                    #set($freeBagNode = "$fs.bag")
+                                                #else
+                                                    #set($freeBagNode = "$fs.bag (Free)")
+                                                #end
+                                             #else
+                                             	#set($freeBagNode = "0 KG")
+                                             #end
+                                             #if($bag ne "NA")
+                                             	#if($freeBagNode != "")
+                                                	#set($bag = "$freeBagNode + $bag (Paid)")
+                                                #else
+                                                	#set($bag = "$bag (Paid)")
+                                                #end
+                                             #else
+                                                #set($bag = "$freeBagNode")
+                                             #end
+
+                                             #if($sectorCount == 0)
+                                                #if(($pax.addons.other) && ($pax.addons.other!="") && ($pax.addons.other.o.size() > 0) && ($segmentCount<$pax.addons.other.o.size()) && ($pax.addons.other.o.get($segmentCount).isdata == 'true'))
+                                                   #if($other ne "NA")
+                                                      #if($pax.addons.other.o.size() > $segmentCount)
+                                                         #set($other ="$other, $pax.addons.other.o.get($segmentCount).desc for $fs.dac - $fs.aac")
+                                                      #end
+                                                   #else
+                                                      #if($pax.addons.other.o.size() > $segmentCount)
+                                                         #set($other ="$pax.addons.other.o.get($segmentCount).desc for $fs.dac - $fs.aac")
+                                                      #end
+                                                   #end
+                                                #end
+                                             #elseif(($pax.addons.other) && ($pax.addons.other!="") && ($pax.addons.other.r.size() > 0) && ($segmentCount<$pax.addons.other.r.size()) && ($pax.addons.other.r.get($segmentCount).isdata == 'true'))
+                                                #if($returnother ne "NA")
+                                                   #if($pax.addons.other.o.size() > $segmentCount)
+                                                      #set($returnother ="$returnother, $pax.addons.other.o.get($segmentCount).desc for $fs.dac - $fs.aac")
+                                                   #end
+                                                #else
+                                                   #if($pax.addons.other.o.size() > $segmentCount)
+                                                      #set($returnother ="$pax.addons.other.o.get($segmentCount).desc for $fs.dac - $fs.aac")
+                                                   #end
+                                                #end
+                                             #end
+
+                                             #if($other ne "NA" && $returnother eq "NA" )
+                                                #set($specialReq = $other)
+                                             #end
+
+                                             #if($returnother ne "NA" && $other ne "NA")
+                                                #set($specialReq = $other +' and ' + $returnother)
+                                             #end
+
+                                             #if($returnother ne "NA" && $other eq "NA")
+                                                #set($specialReq = $returnother)
+                                             #end
+
+                                             <td width="100" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                                <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">#if($stringUtils.split($pax.paxClass," ").get(0) eq "Infant")NA#else$bag#end</p>
+                                             </td>
+                                             <td width="100" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                                <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$seat</p>
+                                             </td>
+                                          #end
+                                       #end
+                                    </tr> <!-- End of L-393 -->
+
+                                    #if($specialReq ne "NA")
+                                       <tr>
+                                          <td valign="top" height="30" colspan="5" style="color: rgb(102, 102, 102); padding: 10px 10px 0px 0px;">
+                                             <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"><strong>Special Request:</strong> $specialReq </p>
+                                          </td>
+                                       </tr>
+                                    #end
+                                    #if($paxList.size() ne "1" and $paxCount < $paxList.size())
+                                       <tr>
+                                          <td colspan="5" height="10" style=" border-bottom:1px solid #ccc;" valign="middle" ></td>
+                                       </tr>
+                                    #end
+                                 #end <!-- End of L-388 -->
+                              </tbody>
+                           #end
+
+                           #if($source eq "MO")
+                              <tbody>
+                                 #set($paxCount=0)
+                                 #foreach($pax in $paxDetList)
+                                    #set($paxCount=$paxCount+1)
+                                    #set($specialreq = "NA")
+                                    #set($specialRequest = "NA")
+                                    #set($other = "NA")
+                                    #set($ins = "NA")
+                                    #foreach($key in $fltSchedule)
+                                       #foreach($fs in $key.get(0).OD.get(0).FS)
+                                          #foreach($routeKey in $fltSchedule.keySet())
+                                             #foreach($addon in $pax.get($routeKey).get(0).addons)
+                                                #foreach($addonkey in $addon.keySet())
+                                                   #if($addon.get($addonkey).segId eq $fs.segId)
+                                                      #if($addon.keySet().contains("ins") and $addonkey eq "ins" )
+                                                         #if($ins eq "NA" )
+                                                            #if($addon.get("ins").id ne "POLICY-NUMBER-NULL")
+                                                               #set($ins = $addon.get("ins").id)
+                                                            #else
+                                                               #set($ins = "In Progress")
+                                                            #end
+                                                         #end
+                                                      #end
+                                                   #end
+                                                #end
+                                             #end
+                                          #end
+                                       #end
+                                    #end
+                                    <!-- sec 556 -->
+                                    <tr>
+                                       <td width="220" height="30" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                          <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"><strong style="font-size:14px;">$pax.title $pax.fname $pax.mname $pax.lname</strong> ($pax.paxClass)<br></br> Insurance Policy :  <br style="line-height:2px;" />$ins</p>
+                                       </td>
+                                       #set($sectorCount=-1)
+                                       #foreach($routeKey in $fltSchedule.keySet())
+                                          #set($sectorCount=$sectorCount+1)
+                                          #set($segmentCount = -1)
+                                          #foreach($fs in $fltSchedule.get($routeKey).get(0).OD.get(0).FS)
+                                             #set($meal = "NA")
+                                             #set($bag = "NA")
+                                             #set($seat = "NA")
+                                             #set($segmentCount = $segmentCount+1)
+                                             #if($segmentCount ne 0 or $sectorCount ne 0)
+                                                <!-- Culprit there was a closing tr tag -->
+                                                <tr>
+                                                   <td width="220" height="30" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                                      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"><strong style="font-size:14px;"></strong></p>
+                                                   </td>
+                                             #end
+                                                   <td width="100" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                                      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$fs.dac - $fs.aac</p>
+                                                   </td>
+
+                                                   #foreach($addon in $pax.get($routeKey).get(0).addons)
+                                                      #foreach($addonkey in $addon.keySet())
+                                                         #if($addon.get($addonkey).segId eq $fs.segId)
+                                                            #if($addon.keySet().contains("meal") and $addonkey eq "meal" )
+                                                               #set($meal = $addon.get("meal").desc+" ("+$addon.get("meal").status+")")
+                                                            #end
+                                                            #if($addon.keySet().contains("bag") and $addonkey eq "bag")
+                                                               #set($bag = $addon.get("bag").desc)
+                                                            #end
+                                                            #if($addon.keySet().contains("seats") and $addonkey eq "seats" )
+                                                               #set($seat = $addon.get("seats").desc+" ("+$addon.get("seats").status+")")
+                                                            #end
+                                                            #if($addon.keySet().contains("other") and $addonkey eq "other" )
+                                                               #if($other ne "NA" and $specialRequest ne "NA")
+                                                                  #set($specialreq = "$specialreq, $other for $fs.dac - $fs.aac")
+                                                                  #set($specialRequest = $addon.get("other").desc)
+                                                                  #set($specialRequest = "$specialRequest for $fs.dac - $fs.aac")
+                                                                  #set($other = $addon.get("other").desc)
+                                                               #else
+                                                                  #set($specialRequest = $addon.get("other").desc)
+                                                                  #set($specialRequest = "$specialRequest for $fs.dac - $fs.aac")
+                                                                  #set($other = $addon.get("other").desc)
+                                                                  #set($specialreq = $specialRequest)
+                                                               #end
+                                                            #end
+                                                         #end
+                                                      #end
+                                                   #end
+                                                   #if($fs.bag and $fs.bag ne "" and $fs.bag ne "0 kg" and $fs.bag ne "0 Kg" and $fs.bag ne "0 KG" and $fs.bag ne " ")
+		                                           	 #if($isHandBaggeOnlyAirline=='true')
+                                                          #set($freeBagNode = "$fs.bag")
+                                                     #else
+                                                          #set($freeBagNode = "$fs.bag (Free)")
+                                                     #end
+		                                           #else
+		                                             #set($freeBagNode = "0 KG")
+		                                           #end
+		                                           #if($bag ne "NA")
+		                                           	 #if($freeBagNode != "")
+		                                             	#set($bag = "$freeBagNode + $bag (Paid)")
+		                                             #else
+		                                             	#set($bag = "$freeBagNode")
+		                                             #end
+		                                           #else
+		                                             #set($bag = "$freeBagNode")
+		                                           #end
+                                                   <td width="100" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                                      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">#if($meal ) $meal #end</p>
+                                                   </td>
+                                                   <td width="100" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                                      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">#if($bag and $pax.paxClass ne "Infant" )$bag#else NA#end</p>
+                                                   </td>
+                                                   <td width="100" valign="top" style="color:#666; padding: 0 10px 0 0;">
+                                                      <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">#if($seat) $seat #end</p>
+                                                   </td>
+                                                </tr>
+                                          #end
+                                       #end
+                                    <!-- End of sec 556 -->
+                                    #if($specialreq and $specialreq ne "NA")
+                                       <tr>
+                                          <td valign="top" height="30" colspan="5" style="color: rgb(102, 102, 102); padding: 10px 10px 0px 0px;">
+                                             <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">
+                                                <strong>Special Request:</strong> $specialreq
+                                             </p>
+                                          </td>
+                                       </tr>
+                                    #end
+                                    #if($paxDetList.size() ne 1 and $paxCount<$paxDetList.size())
+                                       <tr> <td colspan="5" height="10" style=" border-bottom:1px solid #ccc;" valign="middle" ></td> </tr>
+                                    #end
+                                 #end
+                              </tbody>
+                           #end
+                        </table>
+                     </td>
+                  </tr> <!-- End of L-363 -->
+               </table>
+            </td>
+         </tr>
+      </table>
+   </td>
+</tr>
+<!-- End Pax Details -->
+
+#if($isBBG)
+    <tr>
+        <td height="10">
+          <table align="center" width="664" border="0" cellspacing="0" cellpadding="0" style="max-width:664px;">
+            <tbody>
+              <tr>
+                <td width="5"></td>
+                <td>
+                  <img src="https://img.yatra.com/content/air-pay-book-service/css/images/ico-yt-cancel-program.jpg" />
+                </td>
+                <td style="font-size: 12px; font-weight: bold; color: #333;">Covered under Yatra's
+                <span style="color: #4DC962; margin-right: 5px;">
+                   Assure Protection
+                </span>
+                 #if($ycpUrl)
+                    <a href="$ycpUrl" target="_blank" style="font-size: 12px; text-decoration: none;">Know More</a>
+                 #end
+
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </td>
+    </tr>
+<!--Specer -->
+    <tr bgcolor="#ffffff"> <td colspan="3" height="10"></td> </tr>
+  <!--Specer -->
+#else
+  <!--Specer -->
+      <tr bgcolor="#ffffff"> <td colspan="3" height="25"></td> </tr>
+  <!--Specer -->
+#end
+
+
+<!-- Start Ticket Itinerary section -->
+#set($counter=0)
+
+#foreach($keyMaster in $fltSchedule.keySet())
+    #set($key = $fltSchedule.get($keyMaster))
+	#set($sectorcount = $velocityCount)
+	#set($counter = $math.add($counter,1))
+
+	#if($key.get(0).dest == 'AGX')
+		#set($isDestAgatti = 'true')
+	#end
+	#if($key.get(0).dest == 'HKG')
+    		#set($isDestHongKong = 'true')
+  #end
+	#if($key.get(0).org == 'IXJ' || $key.get(0).org == 'IXL' || $key.get(0).org == 'SXR')
+		#set($isOrgJammuSrinagarLeh = 'true')
+	#end
+	#if($key.get(0).org == 'KTM' || $key.get(0).dest == 'KTM' )
+		#set($isOriginDestKathmandu = 'true')
+	#end
+	#foreach($fs in $key.get(0).OD.get(0).FS)
+		#set($isIndigoAirline = 'false')
+		#set($segmentcount = $velocityCount - 1)
+		#set($airlineLogo = $imagePath+ "/" + $fs.ac + ".gif")
+		#set ( $dDate = $stringUtils.split($fs.ddt,"-"))
+		#set ( $dDate = $date.format('EEE, MMM d yyyy', $date.toDate("dd MM yyyy" , "$dDate.get(2) $dDate.get(1) $dDate.get(0)")))
+		#set ( $aDate = $stringUtils.split($fs.adt,"-"))
+		#set ( $aDate = $date.format('EEE, MMM d yyyy', $date.toDate("dd MM yyyy" , "$aDate.get(2) $aDate.get(1) $aDate.get(0)")))
+
+		#if($fs.ac=="SG")
+			#set($isSpecialConditionAirline = 'true')
+		#end
+
+		#if($fs.ac=="6E")
+			#set($isIndigoAirline = 'true')
+		#end
+		#if("Hand Baggage only"==$stringUtils.nullTrim($fs.bag) || $fs.bag=='Hand Baggage only ' || $fs.bag=='Hand Baggage only')
+			#set($isHandBaggeOnlyAirline = 'true')
+			#set($isAnyLegHandBaggage = 'true')
+		#end
+
+
+        #if($isDFC)
+            <tr>
+                <td height="10">
+                  <table align="center" width="664" border="0" cellspacing="0" cellpadding="0" style="max-width:664px;">
+                    <tbody>
+                      <tr>
+                        <td width="5"></td>
+                        <td>
+                          <img src="https://img.yatra.com/content/air-pay-book-service/css/images/ico-yt-cancel-program.jpg" />
+                        </td>
+                        <td style="font-size: 12px; font-weight: bold; color: #333;">Covered under Yatra's
+                        <span style="color: #4DC962; margin-right: 5px;">
+                           Cancellation
+                           Protection
+                        </span>
+                         #if($ycpUrl)
+                            <a href="$ycpUrl" target="_blank" style="font-size: 12px; text-decoration: none;">Know More</a>
+                         #end
+
+                        </td>
+                      </tr>
+                    </tbody>
+                  </table>
+                </td>
+            </tr>
+            <tr> <td colspan="3" height="5"></td> </tr>
+         #end
+
+
+		<tr>
+			<td height="10" align="center" width="664">
+				<table align="center" width="664" border="0" cellspacing="0" cellpadding="0" style="max-width:664px; border:1px solid #ccc; border-radius: 10px; font-size:12px;">
+					<tr>
+						<td>
+							<table align="center" width="664" border="0" cellspacing="0" cellpadding="0" style="max-width:664px; -webkit-text-size-adjust: none; text-align:left; border-bottom: 1px dotted #ccc; padding:10px">
+						   		<tr>
+						      		<td>
+						         		<table align="left" border="0" cellspacing="0" cellpadding="0" style="font-family:arial; font-size:14px;">
+						            		<tr>
+						               			<td style="padding: 0 10px 0 0"> <img src="$imagePath/Going-Forward.png" width="65" height="13" alt="Arrow" title="Arrow" /> </td>
+						               			<td style="padding: 0 10px"> <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"> <strong>$fs.dct</strong> </p> </td>
+						               			<td style="padding: 0" align="center"> <img src="$imagePath/Flight.png" alt="Airline" title="Airline" /> </td>
+								               	<td style="padding: 0 10px"> <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"> <strong>$fs.act</strong> </p> </td>
+								              	<td style="padding: 0 10px; color:#666;"> <p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$dDate</p> </td>
+								            </tr>
+						         		</table>
+						     	 	</td>
+						   		</tr>
+							</table>
+							<table align="center" width="664" border="0" cellspacing="0" cellpadding="0" style="max-width:664px; -webkit-text-size-adjust: none; text-align:left; padding:10px; font-size:12px;">
+								<tr>
+									<td>
+										<table align="left" border="0" cellspacing="0" cellpadding="0" style="font-family:arial; font-size:12px;">
+											<tr>
+												<td width="170" height="25" valign="top" style="color:#666; padding: 0 10px 0 0;" ><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">AIRLINE</p></td>
+												<td width="160" valign="top" style="color:#666; padding: 0 30px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">DEPARTURE</p></td>
+												<td width="160" valign="top" style="color:#666; padding: 0 30px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">ARRIVAL</p></td>
+												<td width="160" valign="top" style="color:#666; padding: 0 20px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">#if(($source == "MO") && ("$!fs.du" == "" ))  #else DURATION #end</p></td>
+												<td width="120" valign="top" style="color:#666;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">PNR</p></td>
+											</tr>
+											<tr>
+												<td width="170" style="color:#666;padding: 0 10px 0 0;" height="30" ><img src="$airlineLogo" alt="Airline" title="Airline" /></td>
+												<td width="160" style="color:#333; font-size:14px; padding: 0 30px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"><strong>$fs.dct</strong></p></td>
+												<td width="160" style="color:#333; font-size:14px; padding: 0 30px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"><strong>$fs.act</strong></p></td>
+												<td width="160" style="color:#666; padding: 0 20px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$fs.du #if($source ne "MO")Hrs#end</p></td>
+												<td width="120" style="color:#333; padding: 0 20px 0 0; font-size:14px"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$fs.arpnr</p></td>
+											</tr>
+											<tr>
+												<td width="170" style="color:#666;padding: 0 10px 0 0;" >
+														<p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$fs.an
+															<br style="line-height:2px;" />
+															$fs.ac - $fs.fl
+
+															<!-- Operated By clause -->
+															#set($operator = " ")
+															#if(($isTenantInt == 'true') && ($fs.mc != $fs.oac))
+							                                    #if($fs.occt == "")
+							                                    	#if($fs.cct != 'This flight is operated by ')
+							                                    		#set($operator = $fs.cct)
+							                                    	#end
+						                                    	#else
+						                                    		#set($operator = $fs.cct)
+						                                    	#end
+							                              	#end
+							                              	#set($opArray = $operator.split(' by '))
+							                              	#if($opArray.size() == 2)
+																<br style="line-height:2px;" />
+																<span style="font-size:11px; color:red">
+																	(Operated By
+																	<br style="line-height:2px;" />
+																	$opArray.get(1))
+																</span>
+															#end
+															<!-- End of Operated By clause -->
+														</p>
+												</td>
+												<td width="160" style="color:#666; padding: 0 30px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"><strong>$dDate $fs.dd Hrs</strong></p></td>
+												<td width="160" style="color:#666; padding: 0 30px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;"><strong>$aDate $fs.ad Hrs</strong></p></td>
+												<td width="160" style="color:#666; padding: 0 20px 0 0;">
+													<p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">
+														#if($source eq "Flights")
+															#if($tenant eq "int2" or $confirmationJson.tenant.contains("int"))
+																#if((($fs.so.name && $fs.so.name !="") || ($fs.so.get(0).name && $fs.so.get(0).name!="")) && (($fs.so.code && $fs.so.code !="") || ($fs.so.get(0).code && $fs.so.get(0).code!="")))
+																	#if( $fs.so.name )
+																		$fs.so.name ( $fs.so.code)
+																	#elseif( $fs.so.get(0).name )
+																		$fs.so.get(0).name ( $fs.so.get(0).code )
+																	#end
+																	#if($fs.so.gd)
+																		, Time: $fs.so.gd
+																	#elseif($fs.so.get(0).gd)
+																		, Time: $fs.so.get(0).gd
+																	#end
+																#else
+																	Non Stop
+																#end
+															#else
+																#set($stopInfo = $stringUtils.split($fs.st," "))
+																#set($stopInfoSize=0)
+																#set($noOfStops=0)
+																#set($stopInfoSize = $stopInfo.size())
+																#foreach($stop in $stopInfo)
+																	#if($stop.contains("via"))
+																		#set($noOfStops = $noOfStops+1)
+																	#end
+																#end
+																#if($noOfStops > 0 and $stopInfo.get(0)=='via')
+																	$noOfStops Stop
+																#else
+																	Non Stop
+																#end
+															#end
+														#elseif($source eq "MO") <!-- L-261 -->
+															#set($noOfStops=0)
+															#if($fs.so && $fs.so !="")
+																#set($stopOverString = "")
+																#if( $fs.so )
+																	#set($stopInfo = $stringUtils.split($fs.so,"|"))
+																	#foreach($stop in $stopInfo)
+																		#if($stop.contains("via"))
+																			#set($noOfStops = $noOfStops+1)
+																		#end
+																		#set($stopOverString = "$stopOverString $stop")
+																	#end
+																#end
+															#end
+															#if ($noOfStops!=0)
+																#if( $fs.so )
+															 		$noOfStops Stop
+															 	#end
+															 	($stopOverString)
+															#else
+																Non Stop
+															#end
+														#end
+													</p>
+												</td>
+
+											</tr>
+											<tr>
+												<td width="170" style="color:#666;padding: 0 10px 0 0;" ></td>
+												<td width="160" style="color:#666; padding: 0 30px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$fs.dap#if($fs.dt ne ""), $fs.dt#end</p></td>
+												<td width="160" style="color:#666; padding: 0 30px 0 0;"><p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">$fs.aap#if($fs.at ne ""), $fs.at#end</p></td>
+												#if($fs.st and $fs.st ne "Non Stop" and $fs.st ne '0' )
+													<td width="160" style="color:#666; padding: 0 20px 0 0;">
+														<p style="font-family:Arial, Helvetica, sans-serif; margin:0; padding:0;">
+															#if($tenant eq "int2" or $confirmationJson.tenant.contains("int"))
+																#if((($fs.so.name && $fs.so.name !="") || ($fs.so.get(0).name && $fs.so.get(0).name!="")) && (($fs.so.code && $fs.so.code !="") || ($fs.so.get(0).code && $fs.so.get(0).code!="")))
+																	#if( $fs.so.name )
+																		$fs.so.name ( $fs.so.code)
+																	#elseif( $fs.so.get(0).name )
+																		$fs.so.get(0).name ( $fs.so.get(0).code )
+																	#end
+																	#if($fs.so.gd)
+																		, Time: $fs.so.gd
+																	#elseif($fs.so.get(0).gd)
+																		, Time: $fs.so.get(0).gd
+																	#end
+																#end
+															#else
+																#if($fs.st ne "" and $fs.st and $fs.st.contains("via"))
+																	(#if($fs.so.gd and $fs.so.gd ne '') Time: $fs.so.gd #elseif($fs.so.get(0).gd and  $fs.so.get(0).gd ne '') Time: $fs.so.get(0).gd - #end $fs.st)
+																#end
+															#end
+														</p>
+													</td>
+												#end
+												<td width="120" style="color:#666; padding: 0 20px 0 0;"></td>
+											</tr>
+										</table>
+									</td>
+								</tr>
+							</table>
+						</td>
+					</tr>
+					<!-- Start Beneefits Nodes -->
+                    <table>
+				                      <tr>
+                                          #set($upSellBenefits = $upSell.get($keyMaster))
+                                          #set($upSellBenefitsArray = $upSellBenefits.benefits)
+                                         <td colspan="4" align="left">
+                                         #foreach($upSellList in $upSellBenefitsArray)
+                                         $upSellList.id
+                                           #if($foreach.index < ($upSellBenefitsArray.size() - 1))
+                                          <span><font color="#999999"> | </font></span>
+                                           #end
+                                         #end
+                                         </td>
+                                     </tr>
+				    </table>
+				</table>
+			</td>
+		</tr>
+		<!--Specer Start-->
+		<tr bgcolor="#ffffff"> <td colspan="3" height="25"></td> </tr>
+		<!--Specer End-->
+	#end
+#end
+<!-- End Ticket Itinerary section -->
+
+
+<!--Specer -->
+	<tr bgcolor="#ffffff"> <td colspan="3" height="25"></td> </tr>
+<!--Specer -->
+
+<!-- Start Important Information Section -->
+<tr>
+	<td width="664" align="left">
+		<table width="664" cellspacing="0" cellpadding="0" border="0" align="center" style=" max-width:664px; font-family:arial; border:1px solid #ccc; padding:0">
+			<tbody>
+				<tr>
+					<td align="left" style="font-size:16px; color:#333333; background-color:#f0f0f0; text-align:left;font-family:arial; padding:10px 10px 10px 10px;">Important Information</td>
+				</tr>
+				<tr>
+					<td colspan="2">
+						<table cellspacing="0" cellpadding="0" border="0" align="left" width="664" style="max-width:664px; padding-left:5px; font-size:12px;">
+							<tbody>
+								<tr>
+									<td>
+										<ul width="664" style="padding: 0; Margin: 15px 0 15px 20px; color:#333333; font-size:11px; font-family:Arial, Helvetica, sans-serif;">
+											<li style="Margin: 0; padding:5px 0 5px 0">All time indicated are the local times (in 24 hrs. format) at the relevant airport.</li>
+										    #if($cancellation && $cancellation.size()>0 && $cancellation.get(0).cancelAmount!='111')
+												<li style="Margin: 0; padding:5px 0 5px 0">Cancellation charges:-</li><br></br>
+												<table align="center" class="table-style" width="624" cellspacing="0" cellpadding="0" style=" font-family:Arial, Helvetica, sans-serif; margin:0 10px 0 0; font-size:11px; border:1px solid #ccc;">
+													<tbody>
+														<tr>
+															<td width="" height="30" align="center" valign="middle" style="color:#666;border: 1px solid #333; padding:10px;">Airline</td>
+															<td width="" valign="middle" align="center" style="color:#666;  padding:5px;border: 1px solid #333;">Type</td>
+															<td width="" valign="middle" align="center" style="color:#666; padding:5px;border: 1px solid #333;">Sector</td>
+															<td width="" valign="middle" align="center" style="color:#666; padding:5px;border: 1px solid #333;">Airline Cancellation fee</td>
+															<td width="" valign="middle" align="center" style="color:#666; padding:5px;border: 1px solid #333;">Airline Change fee</td>
+															<td width="" valign="middle" align="center" style="color:#666; padding:5px;border: 1px solid #333;">Yatra online Cancellation Fee</td>
+															<td width="" valign="middle" align="center" style="color:#666; padding:5px;border: 1px solid #333;">Yatra Offline Cancellation Fee</td>
+															#if($tenant eq "int2" or $confirmationJson.tenant.contains("int"))
+																<td width="" valign="middle" align="center" style="color:#666; padding:5px;border: 1px solid #333;">Yatra rescheduling Service Fee</td>
+															#end
+														</tr>
+
+														#if($isSpecialReturn eq "true" and $source eq 'Flights')
+															#foreach($cancellationPolicy in $cancellation)
+																#if($cancellationPolicy.cancelAmount!='111')
+																	#foreach($cityCode in $cities.keySet())
+																		#if($cityCode ne $cancellationPolicy.origin)
+																			#set($destination = $cityCode)
+																		#end
+																	#end
+
+																	<tr>
+																		<td width="" height="30" valign="middle" style="color:#999;border: 1px solid #333; text-align:center;">
+																			$cancellationPolicy.airlineCode
+																		</td>
+																		<td width="" valign="middle" style="color:#666;padding:5px;text-align:center;border: 1px solid #333;">
+																			$cancellationPolicy.type
+																		</td>
+																		<td width="" valign="middle" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">
+																			$cancellationPolicy.origin - $destination - $cancellationPolicy.origin
+																		</td>
+																		<td width="" valign="middle" style="color:#666; padding: 5px;text-align: left;border: 1px solid #333;">
+																			#if($cancellationPolicy.refundSlabs && $cancellationPolicy.refundSlabs.size()==0)
+																				<center>#if($isTenantInt=='false') Before #if($cancellationPolicy.airlineCode=='I5') 6 #else 2 #end hrs departure : #end Rs.$cancellationPolicy.cancelAmount</center>
+	                        												#end
+																			#foreach($refundSlab in $cancellationPolicy.refundSlabs)
+																				#if($mathTool.toInteger($refundSlab.startHour) <= 24)
+																					#set($startTimeExp = "$refundSlab.startHour hrs")
+																				#else
+																					#set($startTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.startHour,24)) days")
+																				#end
+																				#if($mathTool.toInteger($refundSlab.endHour) <= 24)
+																					#set($endTimeExp = "$refundSlab.endHour hrs")
+																				#else
+																					#set($endTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.endHour,24)) days")
+																				#end
+																				$startTimeExp - $endTimeExp to departure: Rs. $refundSlab.cancelAmtValue <br></br>
+																			#end
+																		</td>
+																		<td width="" valign="middle" style="color:#666;padding:5px;text-align: left;border: 1px solid #333;">
+																			#if($cancellationPolicy.refundSlabs && $cancellationPolicy.refundSlabs.size()==0)
+																				<center>
+																					#if($isTenantInt=='false') Before #if($cancellationPolicy.airlineCode=='I5') 6 #else 2 #end hrs departure : #end
+																					#if($cancellationPolicy.changeFee)
+																						#if($cancellationPolicy.changeFee != 'Not Available')Rs.#end
+																						 $cancellationPolicy.changeFee
+																					#elseif($isTenantInt=='true')
+																						Not Available
+																					#else
+																						Rs.$cancellationPolicy.cancelAmount
+																					#end
+																				</center>
+													                        #end
+																			#foreach($refundSlab in $cancellationPolicy.refundSlabs)
+																				#if($mathTool.toInteger($refundSlab.startHour) <= 24)
+																					#set($startTimeExp = "$refundSlab.startHour hrs")
+																				#else
+																					#set($startTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.startHour,24)) days")
+																				#end
+																				#if($mathTool.toInteger($refundSlab.endHour) <= 24)
+																					#set($endTimeExp = "$refundSlab.endHour hrs")
+																				#else
+																					#set($endTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.endHour,24)) days")
+																				#end
+																				$startTimeExp - $endTimeExp to departure: Rs. $refundSlab.cancelAmtValue <br></br>
+																			#end
+																		</td>
+																		<td width="" valign="left" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">Rs. $onlinecancellationfee</td>
+																		<td width="" valign="left" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">Rs. $offlinecancellationfee</td>
+																		#if($tenant eq "int2" or $confirmationJson.tenant.contains("int"))
+																			<td width="" valign="left" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">Rs. $internationalreschedulingfee</td>
+																		#end
+																	</tr>
+																#end
+															#end
+
+														#elseif($source eq "MO") <!-- END of L-690 -->
+															#foreach($cancellationPolicy in $cancellation)
+																#if($cancellationPolicy.cancelAmount!='111')
+																	#set($isSpecialReturn ='false')
+																	#set($flightId = $cancellationPolicy.ID)
+																	#foreach($fs in $fltSchedule)
+																		#if($flightId eq $fs.get(0).ID )
+																			#if( $fs.get(0).SpecialRoundTrip eq 'YES')
+																				#set($isSpecialReturn ='true')
+																			#end
+																			#if($isSpecialReturn eq 'true')
+																				#foreach($cityCode in $cities.keySet())
+																					#if($cityCode ne $cancellationPolicy.origin)
+																						#set($destination = "- $cityCode")
+																					#end
+																				#end
+																			#end
+																			<tr>
+																				<td width="" height="30" valign="middle" style="color:#999;border: 1px solid #333; text-align:center;">$cancellationPolicy.airlineCode</td>
+																				<td width="" valign="middle" style="color:#666;padding:5px;text-align:center;border: 1px solid #333;">$cancellationPolicy.type</td>
+																				#if($isSpecialReturn eq 'true')
+																					<td width="" valign="middle" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">$cancellationPolicy.origin $destination - $cancellationPolicy.origin</td>
+																				#else
+																					<td width="" valign="middle" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">$cancellationPolicy.origin - $cancellationPolicy.dest</td>
+																				#end
+
+																				<td width="" valign="middle" style="color:#666; padding: 5px;text-align: left;border: 1px solid #333;">
+																					#if($cancellationPolicy.refundSlabs && $cancellationPolicy.refundSlabs.size()==0)
+																						<center>
+																							#if($isTenantInt=='false') Before #if($cancellationPolicy.airlineCode=='I5') 6 #else 2 #end hrs departure : #end #putAmount($cancellationPolicy.cancelAmount)
+																						</center>
+																					#end
+																					#foreach($refundSlab in $cancellationPolicy.refundSlabs)
+																						#if($mathTool.toInteger($refundSlab.startHour) <= 24)
+																							#set($startTimeExp = "$refundSlab.startHour hrs")
+																						#else
+																							#set($startTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.startHour,24)) days")
+																						#end
+																						#if($mathTool.toInteger($refundSlab.endHour) <= 24)
+																							#set($endTimeExp = "$refundSlab.endHour hrs")
+																						#else
+																							#set($endTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.endHour,24)) days")
+																						#end
+																						$startTimeExp - $endTimeExp to departure: #putAmount($cancellationPolicy.cancelAmount) <br></br>
+																					#end
+																				</td>
+																				<td width="" valign="middle" style="color:#666;padding:5px;text-align: left;border: 1px solid #333;">
+																					#if($cancellationPolicy.refundSlabs && $cancellationPolicy.refundSlabs.size()==0)
+																						<center>
+																							#if($isTenantInt=='false') Before #if($cancellationPolicy.airlineCode=='I5') 6 #else 2 #end hrs departure : #end
+																							#if($cancellationPolicy.changeFee)
+																								#if($cancellationPolicy.changeFee != 'Not Available')Rs.#end
+																								 $cancellationPolicy.changeFee
+																							#elseif($isTenantInt=='true')
+																								Not Available
+																							#else
+																								Rs.$cancellationPolicy.cancelAmount
+																							#end
+																						</center>
+																					#end
+																					#foreach($refundSlab in $cancellationPolicy.refundSlabs)
+																						#if($mathTool.toInteger($refundSlab.startHour) <= 24)
+																							#set($startTimeExp = "$refundSlab.startHour hrs")
+																						#else
+																							#set($startTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.startHour,24)) days")
+																						#end
+																						#if($mathTool.toInteger($refundSlab.endHour) <= 24)
+																							#set($endTimeExp = "$refundSlab.endHour hrs")
+																						#else
+																							#set($endTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.endHour,24)) days")
+																						#end
+																						$startTimeExp - $endTimeExp to departure: Rs. $refundSlab.cancelAmtValue <br></br>
+																					#end
+																				</td>
+																				<td width="" valign="left" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">Rs. $onlinecancellationfee</td>
+																				<td width="" valign="left" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">Rs. $offlinecancellationfee</td>
+																				#if($tenant eq "int2" or $confirmationJson.tenant.contains("int"))
+																					<td width="" valign="left" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">Rs. $internationalreschedulingfee</td>
+																				#end
+																			</tr>
+																		#end
+																	#end
+																#end
+															#end
+														#else <!-- End of L-261 -->
+															#foreach($cancellationPolicy in $cancellation)
+																#if($cancellationPolicy.cancelAmount!='111')
+																	#set($deststring="")
+																	#if($cancellationPolicy.origin eq $cancellationPolicy.dest)
+																		#foreach($cityCode in $cities.keySet())
+																			#if($cityCode ne $cancellationPolicy.origin)
+																				#set($deststring = "$deststring - $cityCode")
+																			#end
+																		#end
+																		#set($deststring = $deststring+"-"+$cancellationPolicy.origin)
+																	#else
+																		#set($deststring=$cancellationPolicy.dest)
+																	#end
+																	<tr>
+																		<td width="" height="30" valign="middle" style="color:#666; border: 1px solid #333; padding:5px;text-align: center;">$cancellationPolicy.airlineCode</td>
+																		<td width="" valign="middle" style="color:#666;border: 1px solid #333;padding:5px;text-align: center;">$cancellationPolicy.type</td>
+																		#if($cancellationPolicy.origin eq $cancellationPolicy.dest)
+																			<td width="" valign="middle" style="color:#666;border: 1px solid #333;padding:5px;text-align: center;">$cancellationPolicy.origin $deststring</td>
+																		#else
+																			<td width="" valign="middle" style="color:#666;border: 1px solid #333;padding:5px;text-align: center;">$cancellationPolicy.origin -$deststring</td>
+																		#end
+																		<td width="" valign="middle" style="color:#666; border: 1px solid #333;padding: 5px;text-align: left;">
+																			#if($cancellationPolicy.refundSlabs && $cancellationPolicy.refundSlabs.size()==0)
+																				<center>
+																					#if($isTenantInt=='false') Before #if($cancellationPolicy.airlineCode=='I5') 6 #else 2 #end hrs departure : #end Rs.$cancellationPolicy.cancelAmount
+																				</center>
+					                        								#end
+																			#foreach($refundSlab in $cancellationPolicy.refundSlabs)
+																				#if( $mathTool.toInteger($refundSlab.startHour) <= 24)
+																					#set($startTimeExp = "$refundSlab.startHour hrs")
+																				#else
+																				#set($startTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.startHour,24)) days")
+																			#end
+																			#if($mathTool.toInteger($refundSlab.endHour) <= 24)
+																				#set($endTimeExp = "$refundSlab.endHour hrs")
+																			#else
+																				#set($endTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.endHour,24)) days")
+																			#end
+																			$startTimeExp - $endTimeExp to departure: Rs. $refundSlab.cancelAmtValue <br></br>
+																			#end
+																		</td>
+																		<td width="" valign="middle" style="color:#666;border: 1px solid #333;padding:5px;text-align: left;">
+																			#if($cancellationPolicy.refundSlabs && $cancellationPolicy.refundSlabs.size()==0)
+																				<center>
+																					#if($isTenantInt=='false') Before #if($cancellationPolicy.airlineCode=='I5') 6 #else 2 #end hrs departure : #end
+																					#if($cancellationPolicy.changeFee)
+																						#if($cancellationPolicy.changeFee != 'Not Available')Rs.#end
+																						 $cancellationPolicy.changeFee
+																					#elseif($isTenantInt=='true')
+																						Not Available
+																					#else
+																						Rs.$cancellationPolicy.cancelAmount
+																					#end
+																				</center>
+																	        #end
+																			#foreach($refundSlab in $cancellationPolicy.refundSlabs)
+																				#if($mathTool.toInteger($refundSlab.startHour) <= 24)
+																					#set($startTimeExp = "$refundSlab.startHour hrs")
+																				#else
+																					#set($startTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.startHour,24)) days")
+																				#end
+																				#if($mathTool.toInteger($refundSlab.endHour) <= 24)
+																					#set($endTimeExp = "$refundSlab.endHour hrs")
+																				#else
+																					#set($endTimeExp = "$mathTool.toInteger($mathTool.div($refundSlab.endHour,24)) days")
+																				#end
+																				$startTimeExp - $endTimeExp to departure: Rs. $refundSlab.cancelAmtValue<br></br>
+																				#end
+																		</td>
+																		<td width="" valign="left" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">Rs. $onlinecancellationfee</td>
+																		<td width="" valign="left" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">Rs.  $offlinecancellationfee</td>
+																		#if($tenant eq "int2" or $confirmationJson.tenant.contains("int"))
+																			<td width="" valign="left" style="color:#666;padding:5px;text-align: center;border: 1px solid #333;">Rs. $internationalreschedulingfee</td>
+																		#end
+																	</tr>
+																#end
+															#end
+														#end <!-- End of L-832 -->
+
+													</tbody>
+												</table>
+												<br></br>
+											#end <!-- End of 673 -->
+											<li style="Margin: 0; padding:5px 0 5px 0; clear:both;">Cancellation and date change fees are applicable before departure and per passenger basis. In case of amendment, along with the airline
+												and Yatra fees, you will also have to pay fare difference, if any.</li>
+											<li style="Margin: 0; padding:5px 0 5px 0">Any change to a confirmed ticket including cancellation, postponement, and change of itinerary must be done at least four hours prior
+												to flight departure. In case a passenger becomes a no show, only the applicable taxes will be refunded to the passenger as per the airlinepolicy.</li>
+											<li style="Margin: 0; padding:5px 0 5px 0">Please directly contact airline for any cancellation/reschedule within
+											    four hours of departure time</li>
+
+											#set($airlineContactList="")
+											#foreach($airlineCode in $airlines.keySet())
+												#if($airlineContact.get($airlineCode))
+													#set($airlineContactList = "$airlineContactList $airlines.get($airlineCode) : $airlineContact.get($airlineCode)<br></br>")
+												#end
+											#end
+											#if($tenant eq "dom2" or $confirmationJson.tenant.contains("dom") and $airlineContactList ne "")
+												<li style="Margin: 0; padding:5px 0 5px 0"> Airline Contact Information:<br></br><strong>$airlineContactList</strong></li>
+											#end
+											<li style="Margin: 0; padding:5px 0 5px 0">Please reference the Airline PNR Number when communicating with the airline regarding this booking.</li>
+											#if($tenant eq "dom2" or $confirmationJson.tenant.contains("dom"))
+												<li style="Margin: 0; padding:5px 0 5px 0">If ticket is canceled directly from the airlines web site, office or call center, customer needs to inform Yatra.com for the refund to be
+													processed. Yatra will levy Rs. $onlinecancellationfee per passenger per segment.</li>
+											#end
+											#if($tenant eq "int2" or $confirmationJson.tenant.contains("int"))
+												<li style="Margin: 0; padding:5px 0 5px 0">If ticket is canceled directly from the airlines web site, office or call center, customer needs to inform Yatra.com for the refund to be
+													processed. Yatra will levy Rs. $onlinecancellationfee per passenger per segment.</li>
+											#end
+											#foreach($cityCode in $cities.keySet())
+												#if($cityCode eq "DEL" or $cityCode eq "BOM")
+													#set($hasDelBomCity = "true")
+												#end
+											#end
+											#if($tenant eq "dom2" or $confirmationJson.tenant.contains("dom") and $hasDelBomCity eq "true")
+												<li style="Margin: 0; padding:5px 0 5px 0">Delhi and Mumbai airports have multiple terminals catering to domestic flights, please check the departure/arrival terminal of your
+													flight with the airlines before reaching airport.</li>
+											#end
+											#if($isOrgJammuSrinagarLeh=='true')
+												<li style="Margin: 0; padding:5px 0 5px 0">Passengers traveling on flights originating from Jammu, Srinagar and Leh will not be allowed to carry any cabin baggage due to
+													security restrictions.</li>
+											#end
+											#if($tenant eq 'dom2' or  $confirmationJson.tenant.contains("dom"))
+												<li style="Margin: 0; padding:5px 0 5px 0">Indian citizens need to carry a printout of the e ticket along with a photo identity proof such as driver's license, voters ID or passport to the airline checkin counter. For infant passengers, it is mandatory to carry the Date of Birth certificate. Foreigners travelling on Indian domestic sectors needs to carry their passport along with e ticket.</li>
+											#end
+											#if($tenant eq "int2" or $confirmationJson.tenant.contains("int"))
+												<li style="Margin: 0; padding:5px 0 5px 0">Please carry print of e ticket along with passport valid for at least 6 months from date of travel.</li>
+											#end
+											<li style="Margin: 0; padding:5px 0 5px 0">Use your Airline PNR for all your communication for this booking with the airline.</li>
+											<li style="Margin: 0; padding:5px 0 5px 0">We recommend you checkin at least 2 hours prior to departure of your domestic flight and 3 hours prior to your international flight.</li>
+
+											<!-- #if($tenant eq "int2"  or $confirmationJson.tenant.contains("int"))
+												#set($sectorCount=-1)
+											 	#foreach($key in $fltSchedule)
+											 		#set ( $dDate = $stringUtils.split($key.get(0).OD.get(0).FS.get(0).ddt,"-"))
+											 		#set ( $dDate = $date.format('EEE, d MMM, yyyy', $date.toDate("dd MM yyyy" , "$dDate.get(2) $dDate.get(1) $dDate.get(0)")))
+													#set($sectorCount=$sectorCount+1)
+													#if($sectorCount==0)
+														#if($tripType=="O")
+															<table align="left" class="table-style" border="1" width="620" cellspacing="0" cellpadding="0" style=" font-family:Arial, Helvetica, sans-serif; font-size:11px">
+														#else
+															<table align="left" class="table-style" border="1" width="300" cellspacing="0" cellpadding="0" style=" font-family:Arial, Helvetica, sans-serif; font-size:11px">
+														#end
+																<thead>
+																	<tr>
+																		<th valign="middle" style="border:1px solid #666;padding:3px 10px 3px 3px;color:#666; text-align:left">$key.get(0).org $key.get(0).dest $dDate</th>
+																		<th>&#160;</th>
+																		<th>&#160;</th>
+																	</tr>
+																</thead>
+																<tbody>
+																#foreach($fs in $key.get(0).OD.get(0).FS)
+																	<tr>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">$fs.dct - $fs.act </td>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">cabin</td>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">checkin</td>
+																	</tr>
+																	<tr>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">Adult</td>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">5-7 kg</td>
+																		#if($fs.bag ne " ")
+																			<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">$fs.bag</td>
+																		#else
+																			<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">0 Kg</td>
+																		#end
+																	</tr>
+																#end
+
+																</tbody>
+															</table>
+													#end
+
+													#if($sectorCount==1)
+														<table cellspacing="0" cellpadding="0" width="20" align="left">  <tr> <td width="20">&#160;</td> </tr> </table>
+														<table align="left" class="table-style" border="1" width="300" cellspacing="0" cellpadding="0" style=" font-family:Arial, Helvetica, sans-serif; font-size:11px">
+															<thead>
+																#set ( $dDate = $stringUtils.split($key.get(0).OD.get(0).FS.get(0).ddt,"-"))
+																#set ( $dDate = $date.format('EEE, d MMM, yyyy', $date.toDate("dd MM yyyy" , "$dDate.get(2) $dDate.get(1) $dDate.get(0)")))
+																<tr>
+																	<th valign="middle" style="border:1px solid #666;padding:3px 10px 3px 3px;color:#666; text-align:left">$key.get(0).org $key.get(0).dest $dDate</th>
+																	<th>&#160;</th>
+																	<th>&#160;</th>
+																</tr>
+															</thead>
+															<tbody>
+																#foreach($fs in $key.get(0).OD.get(0).FS)
+																	<tr>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">$fs.dct - $fs.act </td>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">cabin</td>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">checkin</td>
+																	</tr>
+																	<tr>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">Adult</td>
+																		<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">5-7 kg</td>
+																		#if($fs.bag ne " ")
+																			<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">$fs.bag</td>
+																		#else
+																			<td style="border:1px solid #666;padding:5px 10px 5px 3px;color:#666;">0 Kg</td>
+																		#end
+																	</tr>
+																#end
+															</tbody>
+														</table>
+													#end
+												#end
+											#end -->
+
+											#*   Commenting this section
+                                            #if($tenant=='dom2' or $confirmationJson.tenant.contains("dom"))
+                                                #if($isSpecialConditionAirline=='true' )
+                                                    <li style="Margin: 0; padding:5px 0 5px 0; clear:both;">SpiceJet allows free checked baggage of 15kgs per passenger for all domestic flights on all fares EXCEPT HandBaggage Only fares
+                                                        promo/sale. For Hand Baggage Only fares promo/sale, there is no free checked baggage allowance. Passengers on these fares who
+                                                        wish to check baggage will be charged Fare Type Change Fee of Rs.400 at the airport for upto 15kgs. Baggage in excess of 15 Kgs is
+                                                        subject to a fee (Rs.300 per Kg) to be paid at the airport at checkin.</li>
+                                                    <li style="Margin: 0; padding:5px 0 5px 0; clear:both;">Sale fare is for hand baggage only. Hand baggage of one piece maximum 7 kgs. (having maximum overall dimensions of: 115 cms. (L+W+H) on Boeing flights and 108 cms. (L+W+H) on Bombardier flights) in addition to a regularized shoulder laptop bag/ladies handbag is allowed to be carried per passenger.</li>
+                                                #end
+                                            #end
+                                            *#
+
+											<li style="Margin: 0; padding:5px 0 5px 0; clear:both;">When an infant (not entitled to a seat or free baggage allowance) accompanies an adult, a carrycot, or a fully collapsible push
+												chair/stroller is allowed. This may be carried in the cabin if space is available, or else as checked in baggage.</li>
+											#if($tenant=='dom2' or $confirmationJson.tenant.contains("dom"))
+												#if($isHandBaggeOnlyAirline=='false')
+                                                    <li style="Margin: 0; padding:5px 0 5px 0">Airlines allows free checked baggage of 15kgs per passenger for all domestic flights.</li>
+                                                #end
+											#end
+											<li style="Margin: 0; padding:5px 0 5px 0">It is mandatory to carry the Date of Birth certificate for infant passengers.</li>
+											#if($tenant eq "int2" or $confirmationJson.tenant.contains("int"))
+												<li style="Margin: 0; padding:5px 0 5px 0">In case your flight is transiting through a country apart from your destination, please ensure to carry a valid transit visa to avoid boarding denial. In case of any additional information of transit visa please contact a Yatra travel consultant. For eg some countries where transit visa is required are United Kingdom, USA , Australia, Canada.</li>
+											#end
+											#if(($tenant eq "int2" and $isOriginDestKathmandu eq "true" ) or ($confirmationJson.tenant.contains("int") and $isOriginDestKathmandu eq "true"))
+												<li style="Margin: 0; padding:5px 0 5px 0">Indian Nationals travelling to and from Kathmandu are required to carry either Passport or Voter's Id Card only as their valid photo Id, no other photo Id will be considered as valid.</li>
+											#end
+											#if($isDestAgatti eq "true")
+											    <li style="Margin: 0; padding:5px 0 5px 0">The weight of cabin baggage should not exceed 7 kgs.</li>
+												<li style="Margin: 0; padding:5px 0 5px 0">All passengers travelling to Agatti need to take permit from Lakshaweep administrator without which they will not be accepted for travel.
+													Administrator contact details can be accessed at <a href ="http://www.lakshadweep.nic.in"/>http://www.lakshadweep.nic.in</li>
+											#end
+											#if($isSTU)
+                                                <li style="Margin: 0; padding:5px 0 5px 0">The special discounted fares are applicable only to the students pursuing studies in a bonafide school/university. A valid identity card issued by the respective University form signed by the head of the Institution/Student visa copy (I 20 form) is a necessary condition for travel under this offer and passengers will be required to produce the documents at the Airline check in counter at the airport.</li>
+											#end
+											#if($isTenantInt == 'false')
+											    <li style="Margin: 0; padding:5px 0 5px 0">Hand Baggage(Also applicable for cabin baggage) of maximum 7 kg (which would include Laptop and duty free shopping bags) having maximum overall dimensions of: 115 cms (L+W+H) on Boeing flights and 108 cms (L+W+H) on Bombardier flights, is allowed to be carried per passenger, free of cost. Due to airport security regulations, no cabin baggage is allowed on flights originating from Jammu or Srinagar airports.</li>
+										    #end
+										    #if($isDestHongKong == 'true')
+										        <li style="Margin: 0; padding:5px 0 5px 0">All Indian nationals intending to visit Hong Kong must first apply for and successfully complete pre-arrival registration online, without which they will not be able to visit or transit Hong Kong visa-free. For further details kindly visit the Hong Kong Government Immigration Department's website(www.immd.gov.hk).</li>
+										    #end
+										</ul>
+									</td>
+								</tr>
+							</tbody>
+						</table>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</td>
+</tr>
+<!-- End Important Information Section -->
+
+<!--Specer -->
+<tr bgcolor="#ffffff">
+	<td colspan="3" height="25"></td>
+</tr>
+<!--Specer -->
+
+<!-- Start Footer -->
+<tr bgcolor="#ffffff">
+	<td colspan="3" height="25" align="center" width="664">
+		<table width="664" cellspacing="0" cellpadding="0" border="0" align="center" style=" max-width:664px;font-family:arial;">
+			<tbody>
+				<tr>
+					<td align="left" style="font-size:12px; color:#333333; text-align:left;font-family:arial; padding:10px 10px 10px 10px;">To view <strong>cancellation charges</strong> for this booking <a href="$cancellationUrl">click here</a>. To view <strong>reschedule charges</strong> for this booking <a href="$reschedulingUrl">click here</a>. Now you can reschedule your domestic bookings online from Yatra My Bookings.</td>
+				</tr>
+				<tr>
+					<td align="left" style="" height="10"></td>
+				</tr>
+				<tr>
+					<td align="center" style="" height="40"><img src="$imagePath/Yt-Logo.png" width="37" alt="yatra.com" title="yatra.com" /></td>
+				</tr>
+				<tr>
+					<td align="left" style="font-size:12px; color:#333333; text-align:center;font-family:arial; padding:10px 10px 10px 10px;"><strong>Wishing you a happy and safe journey. Thank you for booking with Yatra.com!</strong></td>
+				</tr>
+			</tbody>
+		</table>
+	</td>
+</tr>
+<!-- End Footer -->
+<!--Eticket banner starts -->
+       <!--Spacer -->
+       #if($bannerImageUrl)
+           <tr bgcolor="#ffffff"> <td colspan="3" height="25"></td> </tr>
+           <!--Spacer -->
+
+           <tr>
+               <table width="100%">
+                   <td align="center">
+                       <a href="$rurlPath">
+                           <img src="$bannerImageUrl" width="664" />
+                       </a>
+                   </td>
+               </table>
+           </tr>
+        #end
+<!--Eticket banner ends -->
+</table>
+</body>
+</html>
