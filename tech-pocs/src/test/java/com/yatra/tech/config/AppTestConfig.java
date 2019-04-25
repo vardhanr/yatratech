@@ -32,65 +32,67 @@ import org.springframework.transaction.annotation.EnableTransactionManagement;
 @PropertySource(value = { "classpath:application.properties", "classpath:database.properties" })
 public class AppTestConfig implements ApplicationContextAware {
 
-	private ApplicationContext applicationContext;
+    private ApplicationContext applicationContext;
 
-	@Autowired
-	private Environment environment;
-	@Autowired
-	private DataSource springDataSource;
+    @Autowired
+    private Environment environment;
+    @Autowired
+    private DataSource springDataSource;
 
-	@Override
-	public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
-		this.applicationContext = applicationContext;
-	}
+    @Override
+    public void setApplicationContext(ApplicationContext applicationContext) throws BeansException {
+	this.applicationContext = applicationContext;
+    }
 
-	public ApplicationContext getApplicationContext() {
-		return applicationContext;
-	}
+    public ApplicationContext getApplicationContext() {
+	return applicationContext;
+    }
 
-	@Bean
-	public DataSource getDataSource() {
-		DriverManagerDataSource dataSource = new DriverManagerDataSource();
-		dataSource.setDriverClassName(this.environment.getRequiredProperty("db.driver"));
-		dataSource.setUrl(this.environment.getRequiredProperty("db.url"));
-		dataSource.setUsername(this.environment.getRequiredProperty("db.username"));
-		dataSource.setPassword(this.environment.getRequiredProperty("db.password"));
-		return dataSource;
-	}
+    @Bean
+    public DataSource getDataSource() {
+	DriverManagerDataSource dataSource = new DriverManagerDataSource();
+	dataSource.setDriverClassName(this.environment.getRequiredProperty("db.driver"));
+	dataSource.setUrl(this.environment.getRequiredProperty("db.url"));
+	dataSource.setUsername(this.environment.getRequiredProperty("db.username"));
+	dataSource.setPassword(this.environment.getRequiredProperty("db.password"));
+	return dataSource;
+    }
 
-	@Bean
-	public LocalSessionFactoryBean getSessionFactory() {
-		LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
-		sessionFactory.setDataSource(getDataSource());
-		sessionFactory.setPackagesToScan(new String[] { "com.yatra.tech.entities" });
-		sessionFactory.setHibernateProperties(getHibernateProperties());
-		return sessionFactory;
-	}
+    @Bean
+    public LocalSessionFactoryBean getSessionFactory() {
+	LocalSessionFactoryBean sessionFactory = new LocalSessionFactoryBean();
+	sessionFactory.setDataSource(getDataSource());
+	sessionFactory.setPackagesToScan(new String[] { "com.yatra.tech.entities" });
+	sessionFactory.setHibernateProperties(getHibernateProperties());
+	return sessionFactory;
+    }
 
-	@Bean
-	public Properties getHibernateProperties() {
-		Properties properties = new Properties();
-		properties.put(AvailableSettings.DIALECT, this.environment.getRequiredProperty("hibernate.dialect"));
-		properties.put(AvailableSettings.SHOW_SQL, this.environment.getRequiredProperty("hibernate.show_sql"));
-		properties.put(AvailableSettings.STATEMENT_BATCH_SIZE, this.environment.getRequiredProperty("hibernate.batch.size"));
-		properties.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS, this.environment.getRequiredProperty("hibernate.current.session.context.class"));
-		return properties;
-	}
+    @Bean
+    public Properties getHibernateProperties() {
+	Properties properties = new Properties();
+	properties.put(AvailableSettings.DIALECT, this.environment.getRequiredProperty("hibernate.dialect"));
+	properties.put(AvailableSettings.SHOW_SQL, this.environment.getRequiredProperty("hibernate.show_sql"));
+	properties.put(AvailableSettings.STATEMENT_BATCH_SIZE,
+		this.environment.getRequiredProperty("hibernate.batch.size"));
+	properties.put(AvailableSettings.CURRENT_SESSION_CONTEXT_CLASS,
+		this.environment.getRequiredProperty("hibernate.current.session.context.class"));
+	return properties;
+    }
 
-	@Bean
-	public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
-		HibernateTransactionManager txManager = new HibernateTransactionManager();
-		txManager.setSessionFactory(sessionFactory);
-		return txManager;
-	}
+    @Bean
+    public HibernateTransactionManager transactionManager(SessionFactory sessionFactory) {
+	HibernateTransactionManager txManager = new HibernateTransactionManager();
+	txManager.setSessionFactory(sessionFactory);
+	return txManager;
+    }
 
-	@Bean
-	public JdbcTemplate getJdbcTemplate() {
-		return new JdbcTemplate(this.springDataSource);
-	}
-	
-	@Bean
-	public VelocityEngine getVelocityEngine() {
-		return new VelocityEngine();
-	}
+    @Bean
+    public JdbcTemplate getJdbcTemplate() {
+	return new JdbcTemplate(this.springDataSource);
+    }
+
+    @Bean
+    public VelocityEngine getVelocityEngine() {
+	return new VelocityEngine();
+    }
 }

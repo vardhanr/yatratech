@@ -109,4 +109,12 @@ public class GeneralAppTest extends BaseTestConfig {
 		RestResponse<String> response = this.restClient.sendRestRequest(request);
 		Assert.assertEquals(response.getStatus(), "FAILED");
 	}
+	
+	@Test
+	public void testHibernateVersioning() {
+		ABFUserLog log = this.abfUserLogService.findById(63l);
+		System.out.println(log);
+		log.setPricingId("85798435");
+		this.abfUserLogService.saveOrUpdate(log);
+	}
 }
