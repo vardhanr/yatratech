@@ -1,0 +1,169 @@
+#set($jsonData=$requestMap.jsonData)
+<html>
+   <body style="width:80%; text-align:center;margin:120px;margin-top:50px;background-color:#EBEBEB">
+      <div class="container" style="position: relative;text-align: left;color: black; margin:50px 0;">
+         <img src="$jsonData.basic.flag.png" alt="$jsonData.basic.name.official" style="width:35%;"/>
+         <div class="centered" style="position: absolute;font-size: 40px;top: 125px;left: 50%; margin-left:150px;transform: translate(-50%, -50%);">$jsonData.basic.name.official</div>
+      </div>
+      <table id="maintable" style="width: 100%;color: black;background:transparent;text-align: center;height: 100%;">
+         <tr>
+            <td id="lefttd" style="width: 30%;height: 100%;padding: 0px;    vertical-align: text-bottom;">
+               <table id="innerleft" style="width: 100%;background: white;text-align: center;height: 100%;">
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">$jsonData.basic.textual.title</h1>
+                         #foreach($key in $jsonData.basic.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="myborder"style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">$jsonData.currency.textual.title</h1>
+                        <h2 style="font-family: arial;" style="font-family: arial;">$jsonData.currency.textual.sections[0].body[0]</h2>
+                        <p  style="font-family: arial; font-size: 14px; line-height: 22px;text-align: left">$jsonData.basic.textual.sections[1].body[0]</p>
+                     </td>
+                  </tr>
+                 
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">$jsonData.tipping.textual.title</h1>
+                       #foreach($key in $jsonData.tipping.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                     </td>
+                  </tr>
+                  </tr>
+                  <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                     <h1 style="font-family: arial;">$jsonData.internet.textual.title</h1>
+                     #foreach($key in $jsonData.internet.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                  </td>
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">$jsonData.alcohol.textual.title</h1>
+                        #foreach($key in $jsonData.alcohol.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">Emergency</h1>
+                        <p  style="font-family: arial; font-size: 14px; line-height: 22px;text-align:left;">
+                           $jsonData.emergency.numbers[0].type : $jsonData.emergency.numbers[0].numbers[0]</span>
+                        </p>
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">Health</h1>
+                        <h2 style="font-family: arial;">Vaccination</h2>
+                        #foreach($key in $jsonData.vaccination.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">Religion</h1>
+                         #foreach($key in $jsonData.religion.distribution)
+                        <p style="font-family: arial; font-size: 14px; line-height: 22px;text-align:left;">
+                           $key.type
+                           <span style="float:right;">$key.percentage</span>
+                        </p>
+                        #end
+                     </td>
+                  </tr>
+               </table>
+            </td>
+            <td id="righttd" style="width: 70%;padding: 0px;    vertical-align: text-bottom;">
+               <table id="innerright" style="width: 100%;color: black;background: white;text-align: center;">
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">Embassy</h1>
+                        <h2 style="font-family: arial;">$jsonData.embassy.name</h2>
+                        <p style="font-family: arial; font-size: 14px; line-height: 22px;text-align: left">Address : $jsonData.embassy.address</p>
+                        <p style="font-family: arial; font-size: 14px; line-height: 22px;text-align: left">Phone : $jsonData.embassy.phone</p>
+                        <p  style="font-family: arial; font-size: 14px; line-height: 22px;text-align: left">Website : $jsonData.embassy.website</p>
+                     </td>
+                  </tr>
+                  <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                     <h2 style="font-family: arial;">$!jsonData.atms.textual.title</h2>
+                     #foreach($key in $jsonData.atms.textual.sections)
+                        #foreach($key1 in $key.body)
+                        <p style="font-family: arial; font-size: 14px; line-height: 22px;">$key1</p>
+                     	 #end
+                      #end
+                  </td>
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">Driving And Traffic Rules</h1>
+                        #foreach($key in $jsonData.driving.rules.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h2 style="font-family: arial;">$jsonData.mobilePhone.textual.title</h2>
+                        #foreach($key in $jsonData.mobilePhone.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h2 style="font-family: arial;">$jsonData.creditDebitCard.textual.title</h2>
+                        #foreach($key in $jsonData.creditDebitCard.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                     </td>
+                  </tr>
+                   <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h1 style="font-family: arial;">$jsonData.electricity.textual.title</h1>
+                         #foreach($key in $jsonData.electricity.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                        #foreach($key in $jsonData.electricity.sockets)
+                        <img src="$key.image.png"/>
+                        #end
+                     </td>
+                  </tr>
+                  <tr>
+                     <td class="myborder" style="padding: 10px;border: #EBEBEB solid 1px;border-radius:4px;display:block;margin-bottom:7px">
+                        <h2 style="font-family: arial;">$jsonData.dialCode.textual.title</h2>
+                        #foreach($key in $jsonData.dialCode.textual.sections)
+                        	#foreach($key1 in $key.body)
+	                        	<p style="font-family: arial; font-size: 14px; line-height: 22px;">$!key1</p>
+	                     	 #end
+	                    #end
+                     </td>
+                  </tr>
+               </table>
+            </td>
+         </tr>
+      </table>
+   </body>
+</html>
+

@@ -19,7 +19,7 @@ import org.apache.velocity.runtime.resource.loader.ClasspathResourceLoader;
  *
  * @author rahul.vardhan
  */
-public abstract class VelocityEngineUtils {
+public class VelocityEngineUtils {
 
 	private static final Log logger = LogFactory.getLog(VelocityEngineUtils.class);
 
